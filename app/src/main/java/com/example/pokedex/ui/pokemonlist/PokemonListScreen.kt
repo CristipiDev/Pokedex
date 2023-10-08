@@ -3,14 +3,17 @@ package com.example.pokedex.ui.pokemonlist
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.pokedex.domain.model.PokemonModel
 
-@Preview(showBackground = true)
+
 @Composable
 fun PokemonListScreen(
     viewModel: PokemonListViewModel = hiltViewModel()
@@ -18,29 +21,46 @@ fun PokemonListScreen(
     LaunchedEffect(true) {
         viewModel.getPokemon()
     }
+    PokemonListContent(pokemonList = viewModel.pokemonListState.pokemonList)
 
-    PokemonListContent(viewModel.pokemonListState.pokemonId,
-        viewModel.pokemonListState.pokemonName)
 }
 
 
 @Composable
 fun PokemonListContent(
+    pokemonList: List<PokemonModel>
+) {
+    LazyColumn {
+        items(pokemonList) {pokemon ->
+            PokemonItem(id = pokemon.pokemonId, name = pokemon.pokemonName)
+        }
+    }
+}
+
+@Composable
+fun PokemonItem(
     id: Int,
     name: String
 ) {
-    Column {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.weight(1f), text = "Id:")
-            Text(
-                modifier = Modifier.weight(1f),text = id.toString())
-        }
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.weight(1f), text = "Name:")
-            Text(
-                modifier = Modifier.weight(1f),text = name)
+    Row {
+        Text(
+            modifier = Modifier.weight(1f), text = "X")
+        Column(
+            modifier = Modifier.weight(1f)) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(text = id.toString())
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(text = name)
+            }
         }
     }
+
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun previewPokemonItem() {
+    PokemonItem(1, "Pikachu")
 }

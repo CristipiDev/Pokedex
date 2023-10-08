@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.domain.usecase.GetPokemonFromIdUseCase
+import com.example.pokedex.domain.usecase.GetPokemonListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,18 +14,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
-    private val getPokemonFromIdUseCase: GetPokemonFromIdUseCase
+    private val getPokemonFromIdUseCase: GetPokemonFromIdUseCase,
+    private val getPokemonListUseCase: GetPokemonListUseCase
 ): ViewModel() {
 
     var pokemonListState by mutableStateOf(PokemonListUiState())
 
     fun getPokemon() {
         viewModelScope.launch(Dispatchers.IO) {
-            getPokemonFromIdUseCase.setPokemonId(35)
-            val pokemon = getPokemonFromIdUseCase.invoke()
+            val pokemonList = getPokemonListUseCase.invoke()
+
             pokemonListState = pokemonListState.copy(
-                pokemonId = pokemon.pokemonId,
-                pokemonName = pokemon.pokemonName
+                pokemonList = pokemonList
             )
         }
     }

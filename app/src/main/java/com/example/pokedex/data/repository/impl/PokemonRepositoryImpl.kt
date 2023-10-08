@@ -22,4 +22,20 @@ class PokemonRepositoryImpl @Inject constructor(
 
         return pokemon
     }
+
+    override suspend fun getPokemonList(): List<PokemonModel> {
+        val pokemonList: ArrayList<PokemonModel> = ArrayList()
+
+        withContext(Dispatchers.IO) {
+            val pokemonListRequestResponse = dataSource.getPokemonList().results
+
+            pokemonListRequestResponse.forEach {urlResult ->
+                val textUrl = urlResult.url.split("/")
+
+                pokemonList.add(getPokemonFromId(textUrl[6].toInt()))
+            }
+        }
+
+        return pokemonList
+    }
 }

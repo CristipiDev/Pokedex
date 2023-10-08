@@ -1,6 +1,7 @@
 package com.example.pokedex.ui.pokemonlist
 
+import com.example.pokedex.domain.model.PokemonModel
+
 data class PokemonListUiState (
-    val pokemonId: Int = -1,
-    val pokemonName: String = ""
+    val pokemonList: List<PokemonModel> = emptyList()
 )
