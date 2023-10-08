@@ -1,9 +1,11 @@
 package com.example.pokedex.ui.pokemonlist
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.domain.model.PokemonModel
 
 
@@ -36,7 +39,8 @@ fun PokemonListContent(
         items(pokemonList) {pokemon ->
             PokemonItem(pokemon.pokemonId,
                 pokemon.pokemonName,
-                pokemon.pokemonType)
+                pokemon.pokemonType,
+                pokemon.pokemonImg)
         }
     }
 }
@@ -45,11 +49,15 @@ fun PokemonListContent(
 fun PokemonItem(
     id: Int,
     name: String,
-    pokemonType: List<String>
+    pokemonType: List<String>,
+    img: String
 ) {
     Row(modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)) {
-        Text(
-            modifier = Modifier.weight(1f), text = "X")
+        Image(
+            painter = rememberAsyncImagePainter(img),
+            contentDescription = null,
+            modifier = Modifier.size(128.dp)
+        )
         Column(
             modifier = Modifier.weight(1f)) {
             Text(modifier = Modifier.fillMaxWidth(), text = id.toString())
@@ -70,5 +78,6 @@ fun PokemonItem(
 @Composable
 fun previewPokemonItem() {
     val list = listOf("Hola", "Adios")
-    PokemonItem(1, "Pikachu", list)
+    val img = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
+    PokemonItem(1, "Pikachu", list, img)
 }

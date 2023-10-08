@@ -1,4 +1,7 @@
 package com.example.pokedex.data.network.requesresponse
 
-class PokemonSpriteRequestResponseModel {
-}
+import com.google.gson.annotations.SerializedName
+
+data class PokemonSpriteRequestResponseModel (
+    @SerializedName("front_default") val frontDefault: String
+)
