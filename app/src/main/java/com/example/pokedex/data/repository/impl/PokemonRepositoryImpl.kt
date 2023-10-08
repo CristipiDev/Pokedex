@@ -14,12 +14,36 @@ class PokemonRepositoryImpl @Inject constructor(
         val pokemon: PokemonModel
 
         withContext(Dispatchers.IO) {
-            val id = dataSource.getPokemonFromId(pokemonId).id
-            val name = dataSource.getPokemonFromId(pokemonId).name
+            val pokemonRequestResponseModel = dataSource.getPokemonFromId(pokemonId)
+            val id = pokemonRequestResponseModel.id
+            val name = pokemonRequestResponseModel.name
 
-            pokemon = PokemonModel(id, name)
+            val type: ArrayList<String> = ArrayList()
+            pokemonRequestResponseModel.types.forEach {
+                type.add(it.type.name)
+            }
+
+            val img = pokemonRequestResponseModel.sprites.frontDefault
+
+            pokemon = PokemonModel(id, name, type, img)
         }
 
         return pokemon
+    }
+
+    override suspend fun getPokemonList(): List<PokemonModel> {
+        val pokemonList: ArrayList<PokemonModel> = ArrayList()
+
+        withContext(Dispatchers.IO) {
+            val pokemonListRequestResponse = dataSource.getPokemonList().results
+
+            pokemonListRequestResponse.forEach {urlResult ->
+                val textUrl = urlResult.url.split("/")
+
+                pokemonList.add(getPokemonFromId(textUrl[6].toInt()))
+            }
+        }
+
+        return pokemonList
     }
 }

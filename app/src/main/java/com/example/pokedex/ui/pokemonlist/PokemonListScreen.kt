@@ -1,16 +1,24 @@
 package com.example.pokedex.ui.pokemonlist
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
+import com.example.pokedex.domain.model.PokemonModel
 
-@Preview(showBackground = true)
+
 @Composable
 fun PokemonListScreen(
     viewModel: PokemonListViewModel = hiltViewModel()
@@ -18,29 +26,58 @@ fun PokemonListScreen(
     LaunchedEffect(true) {
         viewModel.getPokemon()
     }
+    PokemonListContent(pokemonList = viewModel.pokemonListState.pokemonList)
 
-    PokemonListContent(viewModel.pokemonListState.pokemonId,
-        viewModel.pokemonListState.pokemonName)
 }
 
 
 @Composable
 fun PokemonListContent(
-    id: Int,
-    name: String
+    pokemonList: List<PokemonModel>
 ) {
-    Column {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.weight(1f), text = "Id:")
-            Text(
-                modifier = Modifier.weight(1f),text = id.toString())
-        }
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                modifier = Modifier.weight(1f), text = "Name:")
-            Text(
-                modifier = Modifier.weight(1f),text = name)
+    LazyColumn {
+        items(pokemonList) {pokemon ->
+            PokemonItem(pokemon.pokemonId,
+                pokemon.pokemonName,
+                pokemon.pokemonType,
+                pokemon.pokemonImg)
         }
     }
+}
+
+@Composable
+fun PokemonItem(
+    id: Int,
+    name: String,
+    pokemonType: List<String>,
+    img: String
+) {
+    Row(modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)) {
+        Image(
+            painter = rememberAsyncImagePainter(img),
+            contentDescription = null,
+            modifier = Modifier.size(128.dp)
+        )
+        Column(
+            modifier = Modifier.weight(1f)) {
+            Text(modifier = Modifier.fillMaxWidth(), text = id.toString())
+            Text(modifier = Modifier.fillMaxWidth(), text = name)
+            Row(modifier = Modifier.fillMaxWidth()) {
+                pokemonType.forEach {
+                    Text(text = it)
+                }
+            }
+
+        }
+    }
+
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun previewPokemonItem() {
+    val list = listOf("Hola", "Adios")
+    val img = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
+    PokemonItem(1, "Pikachu", list, img)
 }
