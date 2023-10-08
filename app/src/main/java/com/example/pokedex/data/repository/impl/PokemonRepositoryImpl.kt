@@ -14,10 +14,16 @@ class PokemonRepositoryImpl @Inject constructor(
         val pokemon: PokemonModel
 
         withContext(Dispatchers.IO) {
-            val id = dataSource.getPokemonFromId(pokemonId).id
-            val name = dataSource.getPokemonFromId(pokemonId).name
+            val pokemonRequestResponseModel = dataSource.getPokemonFromId(pokemonId)
+            val id = pokemonRequestResponseModel.id
+            val name = pokemonRequestResponseModel.name
+            val type: ArrayList<String> = ArrayList()
 
-            pokemon = PokemonModel(id, name)
+            pokemonRequestResponseModel.types.forEach {
+                type.add(it.type.name)
+            }
+
+            pokemon = PokemonModel(id, name, type)
         }
 
         return pokemon
