@@ -23,7 +23,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 type.add(it.type.name)
             }
 
-            val img = pokemonRequestResponseModel.sprites.frontDefault
+            val img = pokemonRequestResponseModel.sprites.other.officialArtwork.frontDefault
 
             pokemon = PokemonModel(id, name, type, img)
         }

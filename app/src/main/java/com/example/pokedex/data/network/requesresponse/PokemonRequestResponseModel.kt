@@ -4,5 +4,5 @@ data class PokemonRequestResponseModel (
     val id: Int,
     val name: String,
     val types: List<PokemonTypeRequestResponseModel>,
-    val sprites: PokemonSpriteRequestResponseModel
+    val sprites: PokemonSpritesRequestResponseModel
 )
