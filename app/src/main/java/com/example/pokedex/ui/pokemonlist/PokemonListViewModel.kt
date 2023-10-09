@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.usecase.GetPokemonFromIdUseCase
 import com.example.pokedex.domain.usecase.GetPokemonListUseCase
+import com.example.pokedex.ui.utils.PokemonTypesEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
