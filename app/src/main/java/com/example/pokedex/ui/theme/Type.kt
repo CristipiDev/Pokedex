@@ -24,12 +24,12 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
-    titleSmall = TextStyle(
+    labelSmall = TextStyle(
         color = White,
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Light,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     )
     /* Other default text styles to override
