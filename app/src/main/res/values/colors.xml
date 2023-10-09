@@ -27,4 +27,24 @@
     <color name="beige_rock">#AEA985</color>
     <color name="blue_steel">#6F9FB5</color>
     <color name="blue_water">#437EE7</color>
+
+    //Colors backgrount cards
+    <color name="background_green_bug">#8094A138</color>
+    <color name="background_grey_dark">#804E423F</color>
+    <color name="background_blue_dragon">#805361D9</color>
+    <color name="background_yellow_electric">#80F1C242</color>
+    <color name="background_pink_fairy">#80DF78E9</color>
+    <color name="background_orange_fighting">#80EF8733</color>
+    <color name="background_red_fire">#80D33D35</color>
+    <color name="background_blue_flying">#808DB7EA</color>
+    <color name="background_purple_ghost">#806A436D</color>
+    <color name="background_green_grass">#805B9F3D</color>
+    <color name="background_brown_ground">#8088542B</color>
+    <color name="background_blue_ice">#8070D5FB</color>
+    <color name="background_grey_normal">#809FA19F</color>
+    <color name="background_purple_poison">#808746C4</color>
+    <color name="background_pink_psychic">#80DD5079</color>
+    <color name="background_beige_rock">#80AEA985</color>
+    <color name="background_blue_steel">#806F9FB5</color>
+    <color name="background_blue_water">#80437EE7</color>
 </resources>

@@ -2,11 +2,11 @@ package com.example.pokedex.ui.pokemonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import com.example.pokedex.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
@@ -68,7 +68,7 @@ fun PokemonItem(
     Row(modifier = Modifier
         .padding(vertical = 5.dp, horizontal = 10.dp)
         .background(
-            MaterialTheme.colorScheme.primary,
+            colorResource(id = typeEnum[0].background),
             RoundedCornerShape(size = 5.dp)
         ),
         verticalAlignment = Alignment.CenterVertically) {
@@ -76,11 +76,17 @@ fun PokemonItem(
             painter = rememberAsyncImagePainter(img),
             contentDescription = null,
             modifier = Modifier.size(80.dp)
+                .padding(horizontal = 10.dp)
         )
         Column(
-            modifier = Modifier.padding(start = 10.dp)) {
-            Text(modifier = Modifier.fillMaxWidth(), text = id.toString())
-            Text(modifier = Modifier.fillMaxWidth(), text = name)
+            modifier = Modifier.padding(start = 15.dp, top = 10.dp, bottom = 10.dp)) {
+            Text(modifier = Modifier.fillMaxWidth(),
+                text = id.toString(),
+                style = MaterialTheme.typography.titleSmall)
+            Text(modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp), text = name,
+                style = MaterialTheme.typography.titleMedium)
             Row(modifier = Modifier.fillMaxWidth()) {
                 typeEnum.forEach {type ->
                     PokemonTypeItem(type)
@@ -97,17 +103,25 @@ fun PokemonItem(
 fun PokemonTypeItem(
     typeEnum: PokemonTypesEnum
 ) {
-    Row(modifier = Modifier
-        .background(
-            color = colorResource(typeEnum.color),
-            shape = RoundedCornerShape(10.dp)
-        )
-        .padding(3.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-        Image(ImageVector.vectorResource(id = typeEnum.icon), "",
-                modifier = Modifier.size(20.dp))
-        Text(text = typeEnum.name, color = colorResource(id = R.color.white),
-            modifier = Modifier.padding(horizontal = 3.dp))
+    Box(modifier = Modifier.shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))) {
+        Row(
+            modifier = Modifier
+                .background(
+                    color = colorResource(typeEnum.color),
+                    shape = RoundedCornerShape(10.dp)
+                )
+                .padding(3.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                ImageVector.vectorResource(id = typeEnum.icon), "",
+                modifier = Modifier.size(20.dp)
+            )
+            Text(
+                text = typeEnum.name, color = colorResource(id = R.color.white),
+                modifier = Modifier.padding(horizontal = 3.dp)
+            )
+        }
     }
 }
 
