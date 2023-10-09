@@ -9,6 +9,22 @@
     <color name="white">#FFFFFF</color>
 
     //Colors type pokemon
-    <color name="green">#5A9E3D</color>
-    <color name="purple">#8746C4</color>
+    <color name="green_bug">#94A138</color>
+    <color name="grey_dark">#4E423F</color>
+    <color name="blue_dragon">#5361D9</color>
+    <color name="yellow_electric">#F1C242</color>
+    <color name="pink_fairy">#DF78E9</color>
+    <color name="orange_fighting">#EF8733</color>
+    <color name="red_fire">#D33D35</color>
+    <color name="blue_flying">#8DB7EA</color>
+    <color name="purple_ghost">#6A436D</color>
+    <color name="green_grass">#5B9F3D</color>
+    <color name="brown_ground">#88542B</color>
+    <color name="blue_ice">#70D5FB</color>
+    <color name="grey_normal">#9FA19F</color>
+    <color name="purple_poison">#8746C4</color>
+    <color name="pink_psychic">#DD5079</color>
+    <color name="beige_rock">#AEA985</color>
+    <color name="blue_steel">#6F9FB5</color>
+    <color name="blue_water">#437EE7</color>
 </resources>
