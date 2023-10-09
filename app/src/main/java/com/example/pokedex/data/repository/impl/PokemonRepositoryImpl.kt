@@ -25,7 +25,7 @@ class PokemonRepositoryImpl @Inject constructor(
 
             val img = pokemonRequestResponseModel.sprites.other.officialArtwork.frontDefault
 
-            pokemon = PokemonModel(id, name, type, img)
+            pokemon = PokemonModel(id, name, type, null, img)
         }
 
         return pokemon
