@@ -2,13 +2,15 @@ package com.example.pokedex.ui.pokemonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import com.example.pokedex.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,11 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.domain.model.PokemonModel
+import com.example.pokedex.ui.utils.PokemonTypesEnum
 
 
 @Composable
@@ -45,7 +52,7 @@ fun PokemonListContent(
         items(pokemonList) {pokemon ->
             PokemonItem(pokemon.pokemonId,
                 pokemon.pokemonName,
-                pokemon.pokemonType,
+                pokemon.pokemonTypeEnum!!,
                 pokemon.pokemonImg)
         }
     }
@@ -55,12 +62,15 @@ fun PokemonListContent(
 fun PokemonItem(
     id: Int,
     name: String,
-    pokemonType: List<String>,
+    typeEnum: List<PokemonTypesEnum>,
     img: String
 ) {
-    Row(modifier = Modifier.padding(vertical = 5.dp, horizontal = 10.dp)
-        .background(MaterialTheme.colorScheme.primary,
-            RoundedCornerShape(size = 5.dp)),
+    Row(modifier = Modifier
+        .padding(vertical = 5.dp, horizontal = 10.dp)
+        .background(
+            MaterialTheme.colorScheme.primary,
+            RoundedCornerShape(size = 5.dp)
+        ),
         verticalAlignment = Alignment.CenterVertically) {
         Image(
             painter = rememberAsyncImagePainter(img),
@@ -72,21 +82,39 @@ fun PokemonItem(
             Text(modifier = Modifier.fillMaxWidth(), text = id.toString())
             Text(modifier = Modifier.fillMaxWidth(), text = name)
             Row(modifier = Modifier.fillMaxWidth()) {
-                pokemonType.forEach {
-                    Text(text = it)
+                typeEnum.forEach {type ->
+                    PokemonTypeItem(type)
+                    Spacer(modifier = Modifier.width(5.dp))
                 }
             }
 
         }
     }
 
+}
 
+@Composable
+fun PokemonTypeItem(
+    typeEnum: PokemonTypesEnum
+) {
+    Row(modifier = Modifier
+        .background(
+            color = colorResource(typeEnum.color),
+            shape = RoundedCornerShape(10.dp)
+        )
+        .padding(3.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Image(ImageVector.vectorResource(id = typeEnum.icon), "",
+                modifier = Modifier.size(20.dp))
+        Text(text = typeEnum.name, color = colorResource(id = R.color.white),
+            modifier = Modifier.padding(horizontal = 3.dp))
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun previewPokemonItem() {
-    val list = listOf("Hola", "Adios")
+    val list = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val img = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/35.png"
     PokemonItem(1, "Pikachu", list, img)
 }
