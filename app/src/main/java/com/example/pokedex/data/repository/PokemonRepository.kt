@@ -38,10 +38,14 @@ class PokemonRepositoryImpl @Inject constructor(
             val typeIds: ArrayList<Int> = ArrayList()
             pokemonRequestResponseModel.types.forEach {
                 //Room insert type
-                val typeId = typeDao.insertNewType(TypeEntity(it.type.name))
-                typeIds.add(typeId.toInt())
+                var typeId = checkIfTypeExists(it.type.name)
+                if (typeId == -1) {
+                    typeId = typeDao.insertNewType(TypeEntity(it.type.name)).toInt()
+                }
 
-                types.add(TypeModel(typeId.toInt(), it.type.name))
+                typeIds.add(typeId)
+
+                types.add(TypeModel(typeId, it.type.name))
             }
             val img = pokemonRequestResponseModel.sprites.other.officialArtwork.frontDefault
 
@@ -97,5 +101,14 @@ class PokemonRepositoryImpl @Inject constructor(
         }
 
         return pokemonList
+    }
+
+    fun checkIfTypeExists(typeName: String): Int{
+        var typeId = -1
+        val typelist = typeDao.getAllTypes()
+        typelist.forEach {type ->
+            if (type.typeName == typeName) typeId = type.typeId
+        }
+        return typeId
     }
 }
