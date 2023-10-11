@@ -5,11 +5,10 @@ import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.utils.setPokemonTypeEmun
 import javax.inject.Inject
 
-class GetPokemonListUseCase @Inject constructor(
+class GetLocalPokemonListUseCase @Inject constructor(
     private val pokemonsRepo: PokemonRepository
 ) {
     suspend operator fun invoke(): List<PokemonModel> {
-        return setPokemonTypeEmun(pokemonsRepo.getPokemonList())
+        return setPokemonTypeEmun(pokemonsRepo.getLocalPokemonList())
     }
-
 }

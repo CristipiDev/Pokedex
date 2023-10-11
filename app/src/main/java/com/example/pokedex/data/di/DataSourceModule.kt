@@ -1,9 +1,15 @@
 package com.example.pokedex.data.di
 
+import android.content.Context
+import androidx.room.Room
+import com.example.pokedex.data.database.PokemonLocalDataSource
+import com.example.pokedex.data.database.dao.PokemonDao
+import com.example.pokedex.data.database.dao.TypeDao
 import com.example.pokedex.data.network.PokemonRemoteDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,6 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class DataSourceModule {
 
+    //RETROFIT
     @Singleton
     @Provides
     @Named("BaseUrl")
@@ -32,4 +39,22 @@ class DataSourceModule {
     @Provides
     fun restDataSource(retrofit: Retrofit): PokemonRemoteDataSource =
         retrofit.create(PokemonRemoteDataSource::class.java)
+
+
+    //ROOM
+    @Singleton
+    @Provides
+    fun provideRoom(@ApplicationContext context: Context): PokemonLocalDataSource {
+        return Room.databaseBuilder(context, PokemonLocalDataSource::class.java, "pokemon_database")
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun pokemonDao(db: PokemonLocalDataSource): PokemonDao = db.pokemonDao()
+
+    @Singleton
+    @Provides
+    fun typeDao(db: PokemonLocalDataSource): TypeDao = db.typeDao()
 }

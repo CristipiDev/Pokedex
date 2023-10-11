@@ -87,4 +87,12 @@ dependencies {
     //RETROFIT
     implementation("com.squareup.retrofit2:retrofit:2.8.1")
     implementation("com.squareup.retrofit2:converter-gson:2.8.1")
+
+    //ROOM
+    val roomVersion = "2.5.2"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    // optional - Kotlin Extensions and Coroutines support for Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+    // To use Kotlin annotation processing tool (kapt)
+    kapt("androidx.room:room-compiler:$roomVersion")
 }
