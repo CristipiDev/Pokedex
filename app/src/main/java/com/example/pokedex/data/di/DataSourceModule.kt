@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.pokedex.data.database.PokemonLocalDataSource
 import com.example.pokedex.data.database.dao.PokemonDao
+import com.example.pokedex.data.database.dao.TypeDao
 import com.example.pokedex.data.network.PokemonRemoteDataSource
 import dagger.Module
 import dagger.Provides
@@ -52,4 +53,8 @@ class DataSourceModule {
     @Singleton
     @Provides
     fun pokemonDao(db: PokemonLocalDataSource): PokemonDao = db.pokemonDao()
+
+    @Singleton
+    @Provides
+    fun typeDao(db: PokemonLocalDataSource): TypeDao = db.typeDao()
 }

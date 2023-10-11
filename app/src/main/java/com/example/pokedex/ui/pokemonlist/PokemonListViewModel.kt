@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.domain.model.PokemonModel
+import com.example.pokedex.domain.usecase.GetLocalPokemonListUseCase
 import com.example.pokedex.domain.usecase.GetPokemonFromIdUseCase
 import com.example.pokedex.domain.usecase.GetPokemonListUseCase
 import com.example.pokedex.ui.utils.PokemonTypesEnum
@@ -17,14 +18,18 @@ import javax.inject.Inject
 @HiltViewModel
 class PokemonListViewModel @Inject constructor(
     private val getPokemonFromIdUseCase: GetPokemonFromIdUseCase,
-    private val getPokemonListUseCase: GetPokemonListUseCase
+    private val getPokemonListUseCase: GetPokemonListUseCase,
+    private val getLocalPokemonListUseCase: GetLocalPokemonListUseCase
 ): ViewModel() {
 
     var pokemonListState by mutableStateOf(PokemonListUiState())
 
     fun getPokemon() {
         viewModelScope.launch(Dispatchers.IO) {
-            val pokemonList = getPokemonListUseCase.invoke()
+
+            var pokemonList = getLocalPokemonListUseCase.invoke()
+
+            if (pokemonList.isEmpty()) pokemonList = getPokemonListUseCase.invoke()
 
             pokemonListState = pokemonListState.copy(
                 pokemonList = pokemonList
