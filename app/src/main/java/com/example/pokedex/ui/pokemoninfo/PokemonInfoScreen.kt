@@ -125,7 +125,7 @@ fun PokemonInfoMain(
                 Column(modifier = Modifier.padding(10.dp)) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "#${state.pokemonId}",
+                        text = state.pokemonDescription.,
                         fontFamily = FontFamily.Monospace
                     )
 

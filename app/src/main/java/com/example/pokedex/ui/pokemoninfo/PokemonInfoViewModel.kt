@@ -39,13 +39,14 @@ class PokemonInfoViewModel @Inject constructor(
                 pokemonId = selectedPokemon.pokemonId,
                 pokemonName = selectedPokemon.pokemonName,
                 pokemonTypeEnum = selectedPokemon.pokemonTypeEnum!!,
-                pokemonImg = selectedPokemon.pokemonImg
+                pokemonImg = selectedPokemon.pokemonImg,
+                pokemonDescription = selectedPokemon.pokemonDescription
             )
         }
     }
 
     private fun getPokemonModel(pokemonId: Int): PokemonModel {
-        var selectedPokemon = PokemonModel(-1, "", null, "")
+        var selectedPokemon = PokemonModel(-1, "", null, "", "")
         viewModelScope.launch(Dispatchers.IO) {
             getLocalPokemonFromIdUseCase.setPokemonId(pokemonId)
             selectedPokemon  = getLocalPokemonFromIdUseCase.invoke()

@@ -2,6 +2,7 @@ package com.example.pokedex.data.network
 
 import com.example.pokedex.data.network.requesresponse.PokemonListRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
+import com.example.pokedex.data.network.requesresponse.PokemonSpeciesRequestResponseModel
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -12,4 +13,7 @@ interface PokemonRemoteDataSource {
 
     @GET("pokemon/?limit=20&offset=0")
     suspend fun getPokemonList(): PokemonListRequestResponseModel
+
+    @GET("pokemon-species/" + "{pokemonId}")
+    suspend fun getPokemonSpeciesFromId(@Path("pokemonId") pokemonId: Int): PokemonSpeciesRequestResponseModel
 }

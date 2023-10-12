@@ -18,9 +18,7 @@ interface PokemonRepository {
     suspend fun getPokemonFromId(pokemonId: Int): PokemonWithTypesModel
     suspend fun getPokemonList(): List<PokemonWithTypesModel>
     suspend fun getLocalPokemonList(): List<PokemonWithTypesModel>
-
     suspend fun getLocalPokemonFromId(pokemonId: Int): PokemonWithTypesModel
-
 }
 
 class PokemonRepositoryImpl @Inject constructor(
@@ -50,12 +48,13 @@ class PokemonRepositoryImpl @Inject constructor(
                 types.add(TypeModel(typeId, it.type.name))
             }
             val img = pokemonRequestResponseModel.sprites.other.officialArtwork.frontDefault
+            val description = dataSource.getPokemonSpeciesFromId(pokemonId).descriptionList[0].descriptionText
 
-            pokemon = PokemonWithTypesModel(PokemonModel(id, name, null, img), types)
+            pokemon = PokemonWithTypesModel(PokemonModel(id, name, null, img, description), types)
 
             //Room
             //insert pokemon
-             val pokemonId = pokemonDao.insertNewPokemon(PokemonEntity(id, name, img))
+             val pokemonId = pokemonDao.insertNewPokemon(PokemonEntity(id, name, img, description))
             //insert types into this pokemon
             typeIds.forEach {id ->
                 val crossRef = PokemonTypesCrossResEntity(pokemonId.toInt(), id)
@@ -91,7 +90,8 @@ class PokemonRepositoryImpl @Inject constructor(
                     pokemon.pokemon.pokemonId,
                     pokemon.pokemon.pokemonName,
                     null,
-                    pokemon.pokemon.pokemonImg
+                    pokemon.pokemon.pokemonImg,
+                    pokemon.pokemon.pokemonDescription
                 )
 
                 val typeList: ArrayList<TypeModel> = ArrayList()
@@ -114,7 +114,8 @@ class PokemonRepositoryImpl @Inject constructor(
                 pokemonEntity.pokemon.pokemonId,
                 pokemonEntity.pokemon.pokemonName,
                 null,
-                pokemonEntity.pokemon.pokemonImg
+                pokemonEntity.pokemon.pokemonImg,
+                pokemonEntity.pokemon.pokemonDescription
             )
             val typeList: ArrayList<TypeModel> = ArrayList()
             pokemonEntity.types.forEach {type ->

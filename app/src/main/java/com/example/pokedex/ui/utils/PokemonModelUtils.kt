@@ -16,6 +16,7 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
     val id = pokemonModel.pokemon.pokemonId
     val name = pokemonModel.pokemon.pokemonName
     val img = pokemonModel.pokemon.pokemonImg
+    val description = pokemonModel.pokemon.pokemonDescription
 
     val typeEnum: ArrayList<PokemonTypesEnum> = ArrayList()
     pokemonModel.typeList.forEach {typeModel ->
@@ -40,5 +41,5 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
             PokemonTypesEnum.WATER.toString() -> { typeEnum.add(PokemonTypesEnum.WATER) }
         }
     }
-    return PokemonModel(id, name, typeEnum, img)
+    return PokemonModel(id, name, typeEnum, img, description)
 }
