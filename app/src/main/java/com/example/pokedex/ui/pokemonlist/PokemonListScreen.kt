@@ -2,8 +2,8 @@ package com.example.pokedex.ui.pokemonlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import com.example.pokedex.R
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -11,12 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,42 +25,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.domain.model.PokemonModel
+import com.example.pokedex.ui.navigation.AppRoutes
 import com.example.pokedex.ui.utils.PokemonTypesEnum
 
 
 @Composable
 fun PokemonListScreen(
-    viewModel: PokemonListViewModel = hiltViewModel()
+    viewModel: PokemonListViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     LaunchedEffect(true) {
         viewModel.getPokemon()
     }
-    PokemonListContent(pokemonList = viewModel.pokemonListState.pokemonList)
+    PokemonListContent(
+        pokemonList = viewModel.pokemonListState.pokemonList,
+        navController = navController)
 
 }
 
 
 @Composable
 fun PokemonListContent(
-    pokemonList: List<PokemonModel>
+    pokemonList: List<PokemonModel>,
+    navController: NavController
 ) {
     LazyColumn {
         items(pokemonList) {pokemon ->
             PokemonItem(pokemon.pokemonId,
                 pokemon.pokemonName,
                 pokemon.pokemonTypeEnum!!,
-                pokemon.pokemonImg)
+                pokemon.pokemonImg,
+                navController)
         }
     }
 }
@@ -73,12 +75,15 @@ fun PokemonItem(
     id: Int,
     name: String,
     typeEnum: List<PokemonTypesEnum>,
-    img: String
+    img: String,
+    navController: NavController
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 10.dp)
-        .height(IntrinsicSize.Min)) {
+        .height(IntrinsicSize.Min)
+        .clickable { navController.navigate(
+            AppRoutes.PokemonInfoScreen.route + "/$id") }) {
         Row(
             modifier = Modifier
                 .padding(top = 25.dp)
@@ -165,5 +170,7 @@ fun PokemonTypeItem(
 fun previewPokemonItem() {
     val list = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val img = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
-    PokemonItem(1, "pikachu", list, img)
+    val navController = NavController(LocalContext.current)
+
+    PokemonItem(1, "pikachu", list, img, navController)
 }
