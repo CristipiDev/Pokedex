@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,11 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.domain.model.PokemonModel
+import com.example.pokedex.ui.common.PokemonTypeItemComponent
 import com.example.pokedex.ui.navigation.AppRoutes
 import com.example.pokedex.ui.utils.PokemonTypesEnum
 
@@ -45,7 +42,7 @@ fun PokemonListScreen(
     navController: NavController
 ) {
     LaunchedEffect(true) {
-        viewModel.getPokemon()
+        viewModel.getPokemonList()
     }
     PokemonListContent(
         pokemonList = viewModel.pokemonListState.pokemonList,
@@ -115,7 +112,7 @@ fun PokemonItem(
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     typeEnum.forEach { type ->
-                        PokemonTypeItem(type)
+                        PokemonTypeItemComponent(type)
                         Spacer(modifier = Modifier.width(5.dp))
                     }
                 }
@@ -133,33 +130,6 @@ fun PokemonItem(
                     .fillMaxWidth()
                     .padding(horizontal = 5.dp)
                     .defaultMinSize(minHeight = 1.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun PokemonTypeItem(
-    typeEnum: PokemonTypesEnum
-) {
-    Box(modifier = Modifier.shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))) {
-        Row(
-            modifier = Modifier
-                .background(
-                    color = colorResource(typeEnum.color),
-                    shape = RoundedCornerShape(10.dp)
-                )
-                .padding(3.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                ImageVector.vectorResource(id = typeEnum.icon), "",
-                modifier = Modifier.size(15.dp)
-            )
-            Text(
-                text = typeEnum.name,
-                modifier = Modifier.padding(horizontal = 3.dp),
-                style = MaterialTheme.typography.labelSmall
             )
         }
     }

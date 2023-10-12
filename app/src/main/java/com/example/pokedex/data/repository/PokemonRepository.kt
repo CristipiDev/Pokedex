@@ -19,6 +19,8 @@ interface PokemonRepository {
     suspend fun getPokemonList(): List<PokemonWithTypesModel>
     suspend fun getLocalPokemonList(): List<PokemonWithTypesModel>
 
+    suspend fun getLocalPokemonFromId(pokemonId: Int): PokemonWithTypesModel
+
 }
 
 class PokemonRepositoryImpl @Inject constructor(
@@ -103,7 +105,29 @@ class PokemonRepositoryImpl @Inject constructor(
         return pokemonList
     }
 
-    fun checkIfTypeExists(typeName: String): Int{
+    override suspend fun getLocalPokemonFromId(pokemonId: Int): PokemonWithTypesModel {
+        val pokemon: PokemonWithTypesModel
+
+        withContext(Dispatchers.IO) {
+            val pokemonEntity = pokemonDao.getPokemonFromId(pokemonId)
+            val pokemonModel = PokemonModel(
+                pokemonEntity.pokemon.pokemonId,
+                pokemonEntity.pokemon.pokemonName,
+                null,
+                pokemonEntity.pokemon.pokemonImg
+            )
+            val typeList: ArrayList<TypeModel> = ArrayList()
+            pokemonEntity.types.forEach {type ->
+                typeList.add(TypeModel(type.typeId, type.typeName))
+            }
+
+            pokemon = PokemonWithTypesModel(pokemonModel, typeList)
+        }
+
+        return pokemon
+    }
+
+    private fun checkIfTypeExists(typeName: String): Int{
         var typeId = -1
         val typelist = typeDao.getAllTypes()
         typelist.forEach {type ->
