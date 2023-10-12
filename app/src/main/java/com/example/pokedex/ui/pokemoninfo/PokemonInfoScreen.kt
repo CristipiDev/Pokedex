@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -67,7 +68,8 @@ fun PokemonInfoMain(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .offset(y = 15.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -112,8 +114,9 @@ fun PokemonInfoMain(
             }
             Box(
                 modifier = Modifier
-                    .weight(3f)
+                    .weight(4f)
                     .fillMaxWidth()
+                    .offset(y = 20.dp)
                     .background(
                         MaterialTheme.colorScheme.background,
                         RoundedCornerShape(30.dp)
