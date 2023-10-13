@@ -1,5 +1,7 @@
 package com.example.pokedex.ui.utils
 
+import com.example.pokedex.data.database.entity.PokemonEntity
+import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithTypesModel
 
@@ -17,6 +19,8 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
     val name = pokemonModel.pokemon.pokemonName
     val img = pokemonModel.pokemon.pokemonImg
     val description = pokemonModel.pokemon.pokemonDescription
+    val height = pokemonModel.pokemon.height
+    val weight = pokemonModel.pokemon.weight
 
     val typeEnum: ArrayList<PokemonTypesEnum> = ArrayList()
     pokemonModel.typeList.forEach {typeModel ->
@@ -41,5 +45,35 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
             PokemonTypesEnum.WATER.toString() -> { typeEnum.add(PokemonTypesEnum.WATER) }
         }
     }
-    return PokemonModel(id, name, typeEnum, img, description)
+    return PokemonModel(id, name, typeEnum, img, description, height, weight)
+}
+
+fun setPokemonModelFromPokemonRequestResponseModel(
+    pokemonRequestResponse: PokemonRequestResponseModel,
+    description: String
+): PokemonModel {
+    val id = pokemonRequestResponse.id
+    val name = pokemonRequestResponse.name
+    val img = pokemonRequestResponse.sprites.other.officialArtwork.frontDefault
+    val height = pokemonRequestResponse.height.toFloat() / 10
+    val weight = pokemonRequestResponse.weight.toFloat() / 10
+
+    return PokemonModel(id, name, null, img, description, height, weight)
+}
+
+fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
+    return PokemonEntity(pokemonModel.pokemonId, pokemonModel.pokemonName, pokemonModel.pokemonImg,
+        pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight)
+
+}
+
+fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel {
+    return PokemonModel(
+        pokemonEntity.pokemonId,
+        pokemonEntity.pokemonName,
+        null,
+        pokemonEntity.pokemonImg,
+        pokemonEntity.pokemonDescription,
+        pokemonEntity.pokemonHeight,
+        pokemonEntity.pokemonWeight)
 }

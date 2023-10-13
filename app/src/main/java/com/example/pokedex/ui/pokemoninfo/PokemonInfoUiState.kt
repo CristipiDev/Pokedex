@@ -8,5 +8,7 @@ data class PokemonInfoUiState (
     val pokemonName: String = "",
     val pokemonTypeEnum: List<PokemonTypesEnum> = emptyList(),
     val pokemonImg: String = "",
-    val pokemonDescription: String = ""
+    val pokemonDescription: String = "",
+    val pokemonHeight: Float = -1f,
+    val pokemonWeight: Float = -1f
 )

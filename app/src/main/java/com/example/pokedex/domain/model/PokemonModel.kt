@@ -7,5 +7,7 @@ data class PokemonModel (
     val pokemonName: String,
     val pokemonTypeEnum: List<PokemonTypesEnum>?,
     val pokemonImg: String,
-    val pokemonDescription: String
+    val pokemonDescription: String,
+    val height: Float,
+    val weight: Float
 )

@@ -40,17 +40,10 @@ class PokemonInfoViewModel @Inject constructor(
                 pokemonName = selectedPokemon.pokemonName,
                 pokemonTypeEnum = selectedPokemon.pokemonTypeEnum!!,
                 pokemonImg = selectedPokemon.pokemonImg,
-                pokemonDescription = selectedPokemon.pokemonDescription
+                pokemonDescription = selectedPokemon.pokemonDescription,
+                pokemonHeight = selectedPokemon.height,
+                pokemonWeight = selectedPokemon.weight
             )
         }
-    }
-
-    private fun getPokemonModel(pokemonId: Int): PokemonModel {
-        var selectedPokemon = PokemonModel(-1, "", null, "", "")
-        viewModelScope.launch(Dispatchers.IO) {
-            getLocalPokemonFromIdUseCase.setPokemonId(pokemonId)
-            selectedPokemon  = getLocalPokemonFromIdUseCase.invoke()
-        }
-        return selectedPokemon
     }
 }

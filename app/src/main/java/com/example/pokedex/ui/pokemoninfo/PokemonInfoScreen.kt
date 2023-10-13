@@ -151,7 +151,7 @@ fun PokemonInfoMain(
                                 style = MaterialTheme.typography.titleSmall
                             )
                             Text(
-                                text = "2.5 cm",
+                                text = "${state.pokemonHeight} m",
                                 style = MaterialTheme.typography.headlineMedium
                             )
                         }
@@ -166,7 +166,7 @@ fun PokemonInfoMain(
                                 style = MaterialTheme.typography.titleSmall
                             )
                             Text(
-                                text = "12 kg",
+                                text = "${state.pokemonWeight} kg",
                                 style = MaterialTheme.typography.headlineMedium
                             )
                         }
@@ -204,6 +204,6 @@ fun PreviewPokemonInfoMail() {
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val state = PokemonInfoUiState(1, "pikachu",
         pokemonTypeList, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-        "Texto de descripción")
+        "Texto de descripción", 12f, 56f)
     PokemonInfoMain(navController, state)
 }

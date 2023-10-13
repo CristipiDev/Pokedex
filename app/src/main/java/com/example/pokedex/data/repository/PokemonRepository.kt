@@ -9,6 +9,9 @@ import com.example.pokedex.data.network.PokemonRemoteDataSource
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithTypesModel
 import com.example.pokedex.domain.model.TypeModel
+import com.example.pokedex.ui.utils.setPokemonEntityFromPokemonModel
+import com.example.pokedex.ui.utils.setPokemonModelFromPokemonEntity
+import com.example.pokedex.ui.utils.setPokemonModelFromPokemonRequestResponseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,10 +34,10 @@ class PokemonRepositoryImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val pokemonRequestResponseModel = dataSource.getPokemonFromId(pokemonId)
-            val id = pokemonRequestResponseModel.id
-            val name = pokemonRequestResponseModel.name
-            val types: ArrayList<TypeModel> = ArrayList()
+            val pokemonModel = setPokemonModelFromPokemonRequestResponseModel(pokemonRequestResponseModel,
+                dataSource.getPokemonSpeciesFromId(pokemonId).descriptionList[0].descriptionText)
 
+            val types: ArrayList<TypeModel> = ArrayList()
             val typeIds: ArrayList<Int> = ArrayList()
             pokemonRequestResponseModel.types.forEach {
                 //Room insert type
@@ -44,17 +47,14 @@ class PokemonRepositoryImpl @Inject constructor(
                 }
 
                 typeIds.add(typeId)
-
                 types.add(TypeModel(typeId, it.type.name))
             }
-            val img = pokemonRequestResponseModel.sprites.other.officialArtwork.frontDefault
-            val description = dataSource.getPokemonSpeciesFromId(pokemonId).descriptionList[0].descriptionText
 
-            pokemon = PokemonWithTypesModel(PokemonModel(id, name, null, img, description), types)
+            pokemon = PokemonWithTypesModel(pokemonModel, types)
 
             //Room
             //insert pokemon
-             val pokemonId = pokemonDao.insertNewPokemon(PokemonEntity(id, name, img, description))
+             val pokemonId = pokemonDao.insertNewPokemon(setPokemonEntityFromPokemonModel(pokemonModel))
             //insert types into this pokemon
             typeIds.forEach {id ->
                 val crossRef = PokemonTypesCrossResEntity(pokemonId.toInt(), id)
@@ -86,13 +86,7 @@ class PokemonRepositoryImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             pokemonDao.getAllPokemon().forEach {pokemon ->
-                val pokemonModel = PokemonModel(
-                    pokemon.pokemon.pokemonId,
-                    pokemon.pokemon.pokemonName,
-                    null,
-                    pokemon.pokemon.pokemonImg,
-                    pokemon.pokemon.pokemonDescription
-                )
+                val pokemonModel = setPokemonModelFromPokemonEntity(pokemon.pokemon)
 
                 val typeList: ArrayList<TypeModel> = ArrayList()
                 pokemon.types.forEach {type ->
@@ -110,13 +104,8 @@ class PokemonRepositoryImpl @Inject constructor(
 
         withContext(Dispatchers.IO) {
             val pokemonEntity = pokemonDao.getPokemonFromId(pokemonId)
-            val pokemonModel = PokemonModel(
-                pokemonEntity.pokemon.pokemonId,
-                pokemonEntity.pokemon.pokemonName,
-                null,
-                pokemonEntity.pokemon.pokemonImg,
-                pokemonEntity.pokemon.pokemonDescription
-            )
+            val pokemonModel = setPokemonModelFromPokemonEntity(pokemonEntity.pokemon)
+
             val typeList: ArrayList<TypeModel> = ArrayList()
             pokemonEntity.types.forEach {type ->
                 typeList.add(TypeModel(type.typeId, type.typeName))
