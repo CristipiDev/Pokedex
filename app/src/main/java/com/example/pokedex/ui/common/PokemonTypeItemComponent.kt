@@ -40,7 +40,7 @@ fun PokemonTypeItemComponent(
             Text(
                 text = typeEnum.name,
                 modifier = Modifier.padding(horizontal = 3.dp),
-                style = MaterialTheme.typography.labelSmall
+                style = MaterialTheme.typography.labelMedium
             )
         }
     }

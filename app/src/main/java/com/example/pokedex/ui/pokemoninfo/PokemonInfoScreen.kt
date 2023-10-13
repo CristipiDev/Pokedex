@@ -1,8 +1,10 @@
 package com.example.pokedex.ui.pokemoninfo
 
+import android.text.Html
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -92,7 +96,7 @@ fun PokemonInfoMain(
                     ) {
                         Text(
                             text = "#${state.pokemonId}",
-                            fontFamily = FontFamily.Monospace
+                            style = MaterialTheme.typography.labelSmall
                         )
 
                         Text(
@@ -122,25 +126,51 @@ fun PokemonInfoMain(
                         RoundedCornerShape(30.dp)
                     )
             ) {
-                Column(modifier = Modifier.padding(10.dp)) {
+                Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp,
+                    end = 20.dp, bottom = 30.dp)) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = state.pokemonDescription.,
-                        fontFamily = FontFamily.Monospace
+                        text = Html.fromHtml(state.pokemonDescription,
+                            HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center
                     )
 
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        text = "name",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        //typeEnum.forEach { type ->
-                           // PokemonTypeItem(type)
-                         //   Spacer(modifier = Modifier.width(5.dp))
-                        //}
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .padding(top = 30.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
+                                text = "Height",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Text(
+                                text = "2.5 cm",
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp),
+                                text = "Weight",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Text(
+                                text = "12 kg",
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                        }
+
                     }
 
                 }
@@ -173,6 +203,7 @@ fun PreviewPokemonInfoMail() {
     val navController = NavController(LocalContext.current)
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val state = PokemonInfoUiState(1, "pikachu",
-        pokemonTypeList, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png")
+        pokemonTypeList, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+        "Texto de descripción")
     PokemonInfoMain(navController, state)
 }
