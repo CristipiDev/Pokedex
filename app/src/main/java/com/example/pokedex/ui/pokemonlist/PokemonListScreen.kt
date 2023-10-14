@@ -108,7 +108,7 @@ fun PokemonItem(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
                     text = name.replaceFirstChar { it.uppercase() },
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.labelLarge
                 )
                 Row(modifier = Modifier.fillMaxWidth()) {
                     typeEnum.forEach { type ->

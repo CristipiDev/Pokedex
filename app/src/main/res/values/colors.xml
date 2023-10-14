@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFF</color>
 
+    <color name="blue">#0065FD</color>
+    <color name="pink">#EF70DE</color>
+
     //Colors type pokemon
     <color name="green_bug">#94A138</color>
     <color name="grey_dark">#4E423F</color>

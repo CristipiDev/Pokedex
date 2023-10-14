@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,9 +29,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -62,6 +68,9 @@ fun PokemonInfoMain(
 ) {
     var background = R.color.background_blue_steel
     if (state.pokemonTypeEnum.isNotEmpty()) background = state.pokemonTypeEnum[0].background
+
+    var color = R.color.background_blue_steel
+    if (state.pokemonTypeEnum.isNotEmpty()) color = state.pokemonTypeEnum[0].color
 
     Box (modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier
@@ -103,7 +112,7 @@ fun PokemonInfoMain(
                             modifier = Modifier
                                 .padding(bottom = 8.dp),
                             text = state.pokemonName.replaceFirstChar { it.uppercase() },
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.labelLarge
                         )
                         Row(modifier = Modifier) {
                             if (!state.pokemonTypeEnum.isNullOrEmpty()) {
@@ -126,52 +135,66 @@ fun PokemonInfoMain(
                         RoundedCornerShape(30.dp)
                     )
             ) {
-                Column(modifier = Modifier.padding(top = 30.dp, start = 20.dp,
-                    end = 20.dp, bottom = 30.dp)) {
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 30.dp)) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
+                        text = "Description",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = colorResource(id = color),
+                        textAlign = TextAlign.Start
+                    )
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp),
                         text = Html.fromHtml(state.pokemonDescription,
                             HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center
+                        style = MaterialTheme.typography.bodyMedium
                     )
 
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .padding(top = 30.dp),
-                        horizontalArrangement = Arrangement.Center,
-                        ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                modifier = Modifier
-                                    .padding(bottom = 8.dp),
-                                text = "Height",
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Text(
-                                text = "${state.pokemonHeight} m",
-                                style = MaterialTheme.typography.headlineMedium
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .padding(start = 20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(
-                                modifier = Modifier
-                                    .padding(bottom = 8.dp),
-                                text = "Weight",
-                                style = MaterialTheme.typography.titleSmall
-                            )
-                            Text(
-                                text = "${state.pokemonWeight} kg",
-                                style = MaterialTheme.typography.headlineMedium
-                            )
-                        }
+                    Spacer(modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth())
 
+                    WeightAndHeightBox(state.pokemonHeight, state.pokemonWeight)
+
+                    Spacer(modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth())
+
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .padding(top = 5.dp)) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = "Species",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            modifier = Modifier.weight(2f),
+                            text = "seed",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
+                    Row(modifier = Modifier.fillMaxWidth()
+                        .padding(top = 5.dp)) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = "Abilities",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            modifier = Modifier.weight(2f),
+                            text = "Overgrow, Chlorophyl",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier
+                        .height(30.dp)
+                        .fillMaxWidth())
+                    BreedingBox(color)
 
                 }
             }
@@ -179,12 +202,13 @@ fun PokemonInfoMain(
         }
         Box(
             modifier = Modifier
-                .clickable { navController.popBackStack() }
                 .padding(20.dp)
+                .shadow(10.dp, CircleShape)
                 .background(
                     MaterialTheme.colorScheme.background,
                     CircleShape
-                ),
+                )
+                .clickable { navController.popBackStack() },
             contentAlignment = Alignment.TopStart
         ) {
             Icon(
@@ -194,6 +218,114 @@ fun PokemonInfoMain(
                 modifier = Modifier.padding(5.dp)
             )
         }
+    }
+}
+
+@Composable
+fun WeightAndHeightBox(
+    height: Float,
+    weight: Float
+) {
+    Row(modifier = Modifier
+        .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(bottom = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 8.dp),
+                text = "Height",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = "$height m",
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+        Column(
+            modifier = Modifier
+                .padding(start = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 8.dp),
+                text = "Weight",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = "$weight kg",
+                style = MaterialTheme.typography.headlineLarge
+            )
+        }
+
+    }
+}
+
+@Composable
+fun BreedingBox(
+    color: Int
+) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = "Breeding",
+        style = MaterialTheme.typography.titleMedium,
+        color = colorResource(id = color),
+        textAlign = TextAlign.Start
+    )
+
+    Row(modifier = Modifier.fillMaxWidth()
+        .padding(top = 10.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = "Gender rate",
+            style = MaterialTheme.typography.bodyMedium
+        )
+
+        Row(modifier = Modifier.weight(1f)) {
+            Image(
+                ImageVector.vectorResource(id = R.drawable.male), "",
+                modifier = Modifier.size(15.dp),
+                colorFilter = ColorFilter.tint(colorResource(R.color.blue))
+            )
+            Text(
+                modifier = Modifier.padding(start = 5.dp),
+                text = "87.5%",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Row(modifier = Modifier.weight(1f)) {
+            Image(
+                ImageVector.vectorResource(id = R.drawable.female), "",
+                modifier = Modifier.size(15.dp),
+                colorFilter = ColorFilter.tint(colorResource(R.color.pink))
+            )
+            Text(
+                modifier = Modifier.padding(start = 5.dp),
+                text = "87.5%",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+    Row(modifier = Modifier.fillMaxWidth()
+        .padding(top = 5.dp)) {
+        Text(
+            modifier = Modifier.weight(1f),
+            text = "Egg group",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            modifier = Modifier.weight(2f),
+            text = "monster",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
