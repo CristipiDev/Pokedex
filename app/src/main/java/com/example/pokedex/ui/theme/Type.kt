@@ -26,6 +26,14 @@ val Typography = Typography(
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     ),
+    bodySmall = TextStyle(
+        color = DarkGrey,
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Light,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
 
     titleMedium = TextStyle(
         fontFamily = FontFamily.SansSerif,
@@ -52,18 +60,17 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     labelMedium = TextStyle(
-        color = White,
-        fontFamily = FontFamily.Monospace,
+        fontFamily = FontFamily.SansSerif,
         fontWeight = FontWeight.Light,
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(
         color = DarkGrey,
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Light,
-        fontSize = 16.sp,
+        fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
     )

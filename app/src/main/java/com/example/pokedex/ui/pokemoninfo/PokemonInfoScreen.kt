@@ -17,35 +17,44 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ExperimentalComposeApi
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.text.HtmlCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.R
 import com.example.pokedex.ui.common.PokemonTypeItemComponent
+import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoAboutTab
+import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoEvolutionsTab
+import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoStatsTab
 import com.example.pokedex.ui.utils.PokemonTypesEnum
+import com.google.accompanist.pager.ExperimentalPagerApi
 
 @Composable
 fun PokemonInfoScreen(
@@ -53,6 +62,9 @@ fun PokemonInfoScreen(
     navController: NavController,
     pokemonId: Int
 ) {
+
+
+
     LaunchedEffect(true) {
         viewModel.getPokemon(pokemonId)
     }
@@ -61,6 +73,7 @@ fun PokemonInfoScreen(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PokemonInfoMain(
     navController: NavController,
@@ -72,17 +85,26 @@ fun PokemonInfoMain(
     var color = R.color.background_blue_steel
     if (state.pokemonTypeEnum.isNotEmpty()) color = state.pokemonTypeEnum[0].color
 
+    val tabs = mutableListOf<Pair<String, @Composable () -> Unit>>()
+    tabs.add(Pair("About") { PokemonInfoAboutTab(color, state) })
+    tabs.add(Pair("Stats/Moves") { PokemonInfoStatsTab() })
+    tabs.add(Pair("Evolutions") { PokemonInfoEvolutionsTab() })
+
+    var stateIndex by remember { mutableStateOf(0) }
+
+
+
     Box (modifier = Modifier.fillMaxWidth()){
         Column(modifier = Modifier
             .fillMaxSize()
             .background(
                 colorResource(background)
-            )) {
+            )
+            .padding(top = 20.dp)) {
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth()
-                    .offset(y = 15.dp),
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -105,7 +127,7 @@ fun PokemonInfoMain(
                     ) {
                         Text(
                             text = "#${state.pokemonId}",
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
@@ -125,78 +147,51 @@ fun PokemonInfoMain(
                     }
                 }
             }
-            Box(
+            Column(
                 modifier = Modifier
                     .weight(4f)
                     .fillMaxWidth()
-                    .offset(y = 20.dp)
-                    .background(
-                        MaterialTheme.colorScheme.background,
-                        RoundedCornerShape(30.dp)
-                    )
+                    .padding(top = 10.dp)
             ) {
-                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 30.dp)) {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "Description",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = colorResource(id = color),
-                        textAlign = TextAlign.Start
-                    )
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 10.dp),
-                        text = Html.fromHtml(state.pokemonDescription,
-                            HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                TabRow(
+                    selectedTabIndex = stateIndex,
+                    contentColor = colorResource(id = color),
+                    containerColor = colorResource(R.color.transparent)
+                ) {
+                    tabs.forEachIndexed {index, tab ->
 
-                    Spacer(modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth())
-
-                    WeightAndHeightBox(state.pokemonHeight, state.pokemonWeight)
-
-                    Spacer(modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth())
-
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .padding(top = 5.dp)) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = "Species",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            modifier = Modifier.weight(2f),
-                            text = "seed",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
+                        var tabBackground = background
+                        var tabTextColor = R.color.white
+                        if (stateIndex == index) {
+                            tabBackground = R.color.white
+                            tabTextColor = color
+                        }
+                        Tab(
+                            selected = stateIndex == index,
+                            onClick = {
+                                stateIndex = index
+                                //onTabIndexChanged(index)
+                            },
+                            selectedContentColor = colorResource(background),
+                            unselectedContentColor = MaterialTheme.colorScheme.background,
+                            modifier = Modifier
+                                .background(
+                                    colorResource(tabBackground),
+                                    RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)
+                                ),
+                            text = {
+                                Text(
+                                    tab.first,
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = colorResource(id = tabTextColor)
+                                )
+                            }
                         )
                     }
-                    Row(modifier = Modifier.fillMaxWidth()
-                        .padding(top = 5.dp)) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = "Abilities",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Text(
-                            modifier = Modifier.weight(2f),
-                            text = "Overgrow, Chlorophyl",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier
-                        .height(30.dp)
-                        .fillMaxWidth())
-                    BreedingBox(color)
-
                 }
+
+                tabs[stateIndex].second()
             }
 
         }
@@ -221,113 +216,7 @@ fun PokemonInfoMain(
     }
 }
 
-@Composable
-fun WeightAndHeightBox(
-    height: Float,
-    weight: Float
-) {
-    Row(modifier = Modifier
-        .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(bottom = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                modifier = Modifier
-                    .padding(bottom = 8.dp),
-                text = "Height",
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = "$height m",
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-        Column(
-            modifier = Modifier
-                .padding(start = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                modifier = Modifier
-                    .padding(bottom = 8.dp),
-                text = "Weight",
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = "$weight kg",
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
 
-    }
-}
-
-@Composable
-fun BreedingBox(
-    color: Int
-) {
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        text = "Breeding",
-        style = MaterialTheme.typography.titleMedium,
-        color = colorResource(id = color),
-        textAlign = TextAlign.Start
-    )
-
-    Row(modifier = Modifier.fillMaxWidth()
-        .padding(top = 10.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = "Gender rate",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Row(modifier = Modifier.weight(1f)) {
-            Image(
-                ImageVector.vectorResource(id = R.drawable.male), "",
-                modifier = Modifier.size(15.dp),
-                colorFilter = ColorFilter.tint(colorResource(R.color.blue))
-            )
-            Text(
-                modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
-        Row(modifier = Modifier.weight(1f)) {
-            Image(
-                ImageVector.vectorResource(id = R.drawable.female), "",
-                modifier = Modifier.size(15.dp),
-                colorFilter = ColorFilter.tint(colorResource(R.color.pink))
-            )
-            Text(
-                modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-    Row(modifier = Modifier.fillMaxWidth()
-        .padding(top = 5.dp)) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = "Egg group",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Text(
-            modifier = Modifier.weight(2f),
-            text = "monster",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

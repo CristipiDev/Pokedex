@@ -1,13 +1,17 @@
 package com.example.pokedex.ui.pokemoninfo
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.colorResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.pokedex.R
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.usecase.GetLocalPokemonFromIdUseCase
+import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoAboutTab
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

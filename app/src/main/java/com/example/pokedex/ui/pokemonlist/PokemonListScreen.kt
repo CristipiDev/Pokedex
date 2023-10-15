@@ -100,7 +100,7 @@ fun PokemonItem(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = "#$id",
-                    style = MaterialTheme.typography.labelSmall
+                    style = MaterialTheme.typography.bodySmall
                 )
 
                 Text(

@@ -18,6 +18,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.example.pokedex.ui.utils.PokemonTypesEnum
+import com.example.pokedex.R
 
 @Composable
 fun PokemonTypeItemComponent(
@@ -40,7 +41,8 @@ fun PokemonTypeItemComponent(
             Text(
                 text = typeEnum.name,
                 modifier = Modifier.padding(horizontal = 3.dp),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelSmall,
+                color = colorResource(id = R.color.white)
             )
         }
     }
