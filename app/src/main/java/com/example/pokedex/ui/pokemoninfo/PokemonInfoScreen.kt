@@ -73,7 +73,6 @@ fun PokemonInfoScreen(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun PokemonInfoMain(
     navController: NavController,
@@ -87,7 +86,7 @@ fun PokemonInfoMain(
 
     val tabs = mutableListOf<Pair<String, @Composable () -> Unit>>()
     tabs.add(Pair("About") { PokemonInfoAboutTab(color, state) })
-    tabs.add(Pair("Stats/Moves") { PokemonInfoStatsTab() })
+    tabs.add(Pair("Stats/Moves") { PokemonInfoStatsTab(color, background) })
     tabs.add(Pair("Evolutions") { PokemonInfoEvolutionsTab() })
 
     var stateIndex by remember { mutableStateOf(0) }
