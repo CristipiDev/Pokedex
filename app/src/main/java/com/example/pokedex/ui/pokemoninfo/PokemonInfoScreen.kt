@@ -87,7 +87,7 @@ fun PokemonInfoMain(
     val tabs = mutableListOf<Pair<String, @Composable () -> Unit>>()
     tabs.add(Pair("About") { PokemonInfoAboutTab(color, state) })
     tabs.add(Pair("Stats/Moves") { PokemonInfoStatsTab(color, background) })
-    tabs.add(Pair("Evolutions") { PokemonInfoEvolutionsTab() })
+    tabs.add(Pair("Evolutions") { PokemonInfoEvolutionsTab(color) })
 
     var stateIndex by remember { mutableStateOf(0) }
 
