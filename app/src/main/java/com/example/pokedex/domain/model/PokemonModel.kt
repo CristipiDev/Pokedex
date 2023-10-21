@@ -11,5 +11,6 @@ data class PokemonModel (
     val weight: Float = 0f,
     val specie: String = "",
     var captureRate: Int = -1,
-    var habitat: String = ""
+    var habitat: String = "",
+    var femaleRate: Float = 0f
 )

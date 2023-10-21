@@ -6,9 +6,8 @@ data class PokemonSpeciesRequestResponseModel (
     @SerializedName("flavor_text_entries") val descriptionList: List<PokemonSpeciesTextRequestResponse>,
     @SerializedName("genera") val speciesList: List<PokemonSpeciesNameRequestResponse>,
     @SerializedName("capture_rate") val captureRate: Int,
-    @SerializedName("habitat") val habitat: PokemonHabitatRequestResponseModel
-
-
+    @SerializedName("habitat") val habitat: PokemonHabitatRequestResponseModel,
+    @SerializedName("gender_rate") val femaleRate: Float
 )
 
 data class PokemonSpeciesTextRequestResponse(

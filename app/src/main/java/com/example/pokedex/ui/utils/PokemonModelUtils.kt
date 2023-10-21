@@ -51,6 +51,9 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithAllModel): PokemonWithAllModel {
     val newCaptureRate = (100 * pokemon.pokemon.captureRate)/255
     pokemon.pokemon.captureRate = newCaptureRate
 
+    val newFemaleRate = (100 * pokemon.pokemon.femaleRate)/8
+    pokemon.pokemon.femaleRate = newFemaleRate
+
     return pokemon
 }
 
@@ -67,15 +70,16 @@ fun setPokemonModelFromPokemonRequestResponseModel(
     val specie = getEnglishSpecie(species.speciesList)
     val captureRate = species.captureRate
     val habitat = species.habitat.habitatName
+    val femaleRate = species.femaleRate
 
 
-    return PokemonModel(id, name, img, description, height, weight, specie, captureRate, habitat)
+    return PokemonModel(id, name, img, description, height, weight, specie, captureRate, habitat, femaleRate)
 }
 
 fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
     return PokemonEntity(pokemonModel.pokemonId, pokemonModel.pokemonName, pokemonModel.pokemonImg,
         pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight, pokemonModel.specie,
-        pokemonModel.captureRate, pokemonModel.habitat)
+        pokemonModel.captureRate, pokemonModel.habitat, pokemonModel.femaleRate)
 
 }
 
@@ -89,7 +93,8 @@ fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel
         pokemonEntity.pokemonWeight,
         pokemonEntity.pokemonSpecie,
         pokemonEntity.pokemonCaptureRate,
-        pokemonEntity.pokemonHabitat)
+        pokemonEntity.pokemonHabitat,
+        pokemonEntity.pokemonFemaleRate)
 }
 
 fun setListOfTypeModelFromTypeEntity(typeEntity: List<TypeEntity>): ArrayList<TypeModel> {

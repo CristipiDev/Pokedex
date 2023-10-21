@@ -118,17 +118,9 @@ fun PokemonInfoAboutTab(
                 .height(20.dp)
                 .fillMaxWidth())
         }
-        item {
-            LocationBox(color)
-            Spacer(
-                modifier = Modifier
-                    .height(30.dp)
-                    .fillMaxWidth()
-            )
-        }
 
         item {
-            BreedingBox(color)
+            BreedingBox(color, state.pokemon.femaleRate)
         }
 
     }
@@ -244,67 +236,11 @@ fun CaptureInfoBox(
         )
     }
 }
-@Composable
-fun LocationBox(
-    color: Int
-) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 5.dp)) {
-        Row {
-            Text(
-                modifier = Modifier.weight(2f),
-                text = "Location area",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "Chance",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "Max level",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-        Divider(Modifier.padding(vertical = 5.dp),
-            1.dp, colorResource(color))
-        Row {
-            Text(
-                modifier = Modifier.weight(2f),
-                text = "Vermilion city area",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = color)
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "100%",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "10",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
-
-
-    }
-}
-
-
 
 @Composable
 fun BreedingBox(
-    color: Int
+    color: Int,
+    femaleRate: Float
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -330,9 +266,10 @@ fun BreedingBox(
                 modifier = Modifier.size(15.dp),
                 colorFilter = ColorFilter.tint(colorResource(R.color.blue))
             )
+            val maleRate = 100-femaleRate
             Text(
                 modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
+                text = "$maleRate%",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -346,7 +283,7 @@ fun BreedingBox(
             )
             Text(
                 modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
+                text = "$femaleRate%",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -390,7 +327,8 @@ fun previewAboutScreen() {
     val pokemonModel = PokemonModel(1, "bulbasur",
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
         "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON.",
-        12f, 50f, "species", 45, "grassland")
+        12f, 50f, "species", 45,
+        "grassland", 30f)
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val abilityList = listOf(AbilityModel(1, "grass"))
     val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)

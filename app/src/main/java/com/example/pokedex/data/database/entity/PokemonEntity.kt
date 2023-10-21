@@ -14,5 +14,6 @@ data class PokemonEntity (
     @ColumnInfo(name = "pokemonWeight") val pokemonWeight: Float,
     @ColumnInfo(name = "pokemonSpecie") val pokemonSpecie: String,
     @ColumnInfo(name = "pokemonCaptureRate") val pokemonCaptureRate: Int,
-    @ColumnInfo(name = "pokemonHabitat") val pokemonHabitat: String
+    @ColumnInfo(name = "pokemonHabitat") val pokemonHabitat: String,
+    @ColumnInfo(name = "pokemonFemaleRate") val pokemonFemaleRate: Float,
 )
