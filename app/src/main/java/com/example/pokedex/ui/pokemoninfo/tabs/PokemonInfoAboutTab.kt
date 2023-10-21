@@ -88,12 +88,18 @@ fun PokemonInfoAboutTab(
                     text = "Abilities",
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text(
-                    modifier = Modifier.weight(2f),
-                    text = "Overgrow, Chlorophyl",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                Row (modifier = Modifier.weight(2f)) {
+                    state.pokemonAbilities.forEachIndexed { index, ability  ->
+                        var abilityText = ability
+                        if (index != state.pokemonAbilities.size-1) abilityText = "$ability, "
+                        Text(
+                            text = abilityText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
             }
 
             Spacer(
@@ -384,7 +390,9 @@ fun previewAboutScreen() {
     val pokemonHeight = 12f
     val pokemonWeight = 50f
     val state = PokemonInfoUiState(pokemonId, pokemonName, pokemonTypeEnum,
-        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight, "seed")
+        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight,
+        "seed", listOf("hola", "mundo")
+    )
 
     PokemonInfoAboutTab(R.color.background_blue_water, state)
 }

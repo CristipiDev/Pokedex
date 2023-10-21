@@ -1,8 +1,5 @@
 package com.example.pokedex.ui.pokemoninfo
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.utils.PokemonTypesEnum
 
 data class PokemonInfoUiState (
@@ -13,6 +10,6 @@ data class PokemonInfoUiState (
     val pokemonDescription: String = "",
     val pokemonHeight: Float = -1f,
     val pokemonWeight: Float = -1f,
-    val pokemonSpecie: String = ""
-
-)
+    val pokemonSpecie: String = "",
+    val pokemonAbilities: List<String> = emptyList(),
+    )
