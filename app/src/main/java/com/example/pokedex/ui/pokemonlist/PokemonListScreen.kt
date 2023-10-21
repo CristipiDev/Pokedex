@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.domain.model.PokemonModel
+import com.example.pokedex.domain.model.PokemonWithAllModel
 import com.example.pokedex.ui.common.PokemonTypeItemComponent
 import com.example.pokedex.ui.navigation.AppRoutes
 import com.example.pokedex.ui.utils.PokemonTypesEnum
@@ -53,15 +54,15 @@ fun PokemonListScreen(
 
 @Composable
 fun PokemonListContent(
-    pokemonList: List<PokemonModel>,
+    pokemonList: List<PokemonWithAllModel>,
     navController: NavController
 ) {
     LazyColumn {
         items(pokemonList) {pokemon ->
-            PokemonItem(pokemon.pokemonId,
-                pokemon.pokemonName,
+            PokemonItem(pokemon.pokemon.pokemonId,
+                pokemon.pokemon.pokemonName,
                 pokemon.pokemonTypeEnum!!,
-                pokemon.pokemonImg,
+                pokemon.pokemon.pokemonImg,
                 navController)
         }
     }

@@ -43,12 +43,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.pokedex.R
+import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.common.PokemonTypeItemComponent
 import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoAboutTab
 import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoEvolutionsTab
@@ -79,10 +82,10 @@ fun PokemonInfoMain(
     state: PokemonInfoUiState
 ) {
     var background = R.color.background_blue_steel
-    if (state.pokemonTypeEnum.isNotEmpty()) background = state.pokemonTypeEnum[0].background
+    if (state.typeEnum.isNotEmpty()) background = state.typeEnum[0].background
 
     var color = R.color.background_blue_steel
-    if (state.pokemonTypeEnum.isNotEmpty()) color = state.pokemonTypeEnum[0].color
+    if (state.typeEnum.isNotEmpty()) color = state.typeEnum[0].color
 
     val tabs = mutableListOf<Pair<String, @Composable () -> Unit>>()
     tabs.add(Pair("About") { PokemonInfoAboutTab(color, state) })
@@ -112,7 +115,7 @@ fun PokemonInfoMain(
                             .width(155.dp)
                     ) {
                         Image(
-                            painter = rememberAsyncImagePainter(state.pokemonImg),
+                            painter = rememberAsyncImagePainter(state.pokemon.pokemonImg),
                             contentDescription = null,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -125,24 +128,29 @@ fun PokemonInfoMain(
                         modifier = Modifier.padding(10.dp)
                     ) {
                         Text(
-                            text = "#${state.pokemonId}",
+                            text = "#${state.pokemon.pokemonId}",
                             style = MaterialTheme.typography.bodySmall
                         )
 
                         Text(
                             modifier = Modifier
                                 .padding(bottom = 8.dp),
-                            text = state.pokemonName.replaceFirstChar { it.uppercase() },
+                            text = state.pokemon.pokemonName.replaceFirstChar { it.uppercase() },
                             style = MaterialTheme.typography.labelLarge
                         )
                         Row(modifier = Modifier) {
-                            if (!state.pokemonTypeEnum.isNullOrEmpty()) {
-                                state.pokemonTypeEnum.forEach { type ->
+                            if (!state.typeEnum.isNullOrEmpty()) {
+                                state.typeEnum.forEach { type ->
                                     PokemonTypeItemComponent(type)
                                     Spacer(modifier = Modifier.width(5.dp))
                                 }
                             }
                         }
+                        Text(modifier = Modifier
+                            .padding(top = 8.dp),
+                            text = state.pokemon.generation.uppercase(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
                 }
             }
@@ -222,8 +230,13 @@ fun PokemonInfoMain(
 fun PreviewPokemonInfoMail() {
     val navController = NavController(LocalContext.current)
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
-    val state = PokemonInfoUiState(1, "pikachu",
-        pokemonTypeList, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-        "Texto de descripción", 12f, 56f)
+    val abilityList = listOf(AbilityModel(1, "grass"))
+
+    val pokemonModel = PokemonModel(1, "pikachu",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+        "Texto de descripción", 12f, 56f, generation = "generation-i")
+
+    val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
+
     PokemonInfoMain(navController, state)
 }

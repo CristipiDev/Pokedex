@@ -29,6 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import com.example.pokedex.R
+import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.EggGroupModel
+import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.pokemoninfo.PokemonInfoUiState
 import com.example.pokedex.ui.utils.PokemonTypesEnum
 
@@ -43,7 +46,7 @@ fun PokemonInfoAboutTab(
         .padding(horizontal = 20.dp, vertical = 30.dp)) {
 
         item {
-            DescriptionBox(color, state.pokemonDescription)
+            DescriptionBox(color, state.pokemon.pokemonDescription)
             Spacer(modifier = Modifier
                 .height(30.dp)
                 .fillMaxWidth())
@@ -51,7 +54,7 @@ fun PokemonInfoAboutTab(
 
 
         item {
-            WeightAndHeightBox(state.pokemonHeight, state.pokemonWeight)
+            WeightAndHeightBox(state.pokemon.height, state.pokemon.weight)
 
             Spacer(
                 modifier = Modifier
@@ -73,7 +76,7 @@ fun PokemonInfoAboutTab(
                 )
                 Text(
                     modifier = Modifier.weight(2f),
-                    text = "seed",
+                    text = state.pokemon.specie,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -88,12 +91,16 @@ fun PokemonInfoAboutTab(
                     text = "Abilities",
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Text(
-                    modifier = Modifier.weight(2f),
-                    text = "Overgrow, Chlorophyl",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                Column (modifier = Modifier.weight(2f)) {
+                    state.abilityList.forEach { ability  ->
+                        Text(
+                            text = ability.abilityName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+
             }
 
             Spacer(
@@ -104,22 +111,16 @@ fun PokemonInfoAboutTab(
         }
 
         item {
-            CaptureInfoBox(color)
+            CaptureInfoBox(color, state.pokemon.captureRate,
+                state.pokemon.habitat)
             Spacer(modifier = Modifier
                 .height(20.dp)
                 .fillMaxWidth())
         }
-        item {
-            LocationBox(color)
-            Spacer(
-                modifier = Modifier
-                    .height(30.dp)
-                    .fillMaxWidth()
-            )
-        }
 
         item {
-            BreedingBox(color)
+            BreedingBox(color, state.pokemon.femaleRate,
+                state.eggGroupList, state.pokemon.growthRate)
         }
 
     }
@@ -192,7 +193,9 @@ fun WeightAndHeightBox(
 
 @Composable
 fun CaptureInfoBox(
-    color: Int
+    color: Int,
+    captureRate: Int,
+    habitat: String
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -212,7 +215,7 @@ fun CaptureInfoBox(
         )
         Text(
             modifier = Modifier.weight(2f),
-            text = "12%",
+            text = "$captureRate%",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
@@ -227,73 +230,19 @@ fun CaptureInfoBox(
         )
         Text(
             modifier = Modifier.weight(2f),
-            text = "grassland",
+            text = habitat,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
     }
 }
-@Composable
-fun LocationBox(
-    color: Int
-) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 5.dp)) {
-        Row {
-            Text(
-                modifier = Modifier.weight(2f),
-                text = "Location area",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "Chance",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "Max level",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-        Divider(Modifier.padding(vertical = 5.dp),
-            1.dp, colorResource(color))
-        Row {
-            Text(
-                modifier = Modifier.weight(2f),
-                text = "Vermilion city area",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(id = color)
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "100%",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                modifier = Modifier.weight(1f),
-                text = "10",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
-        }
-
-
-    }
-}
-
-
 
 @Composable
 fun BreedingBox(
-    color: Int
+    color: Int,
+    femaleRate: Float,
+    eggGroupList: List<EggGroupModel>,
+    growthRate: String
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -319,9 +268,10 @@ fun BreedingBox(
                 modifier = Modifier.size(15.dp),
                 colorFilter = ColorFilter.tint(colorResource(R.color.blue))
             )
+            val maleRate = 100-femaleRate
             Text(
                 modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
+                text = "$maleRate%",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -335,7 +285,7 @@ fun BreedingBox(
             )
             Text(
                 modifier = Modifier.padding(start = 5.dp),
-                text = "87.5%",
+                text = "$femaleRate%",
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -349,12 +299,15 @@ fun BreedingBox(
             text = "Egg group",
             style = MaterialTheme.typography.bodyMedium
         )
-        Text(
-            modifier = Modifier.weight(2f),
-            text = "monster",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Column (modifier = Modifier.weight(2f)) {
+            eggGroupList.forEach { eggGroup  ->
+                Text(
+                    text = eggGroup.eggGroupName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -366,7 +319,7 @@ fun BreedingBox(
         )
         Text(
             modifier = Modifier.weight(2f),
-            text = "12%",
+            text = growthRate,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
@@ -376,15 +329,16 @@ fun BreedingBox(
 @Preview(showBackground = true)
 @Composable
 fun previewAboutScreen() {
-    val pokemonId = 1
-    val pokemonName= "bulbasur"
-    val pokemonTypeEnum = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
-    val pokemonImg = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png"
-    val pokemonDescription = "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON."
-    val pokemonHeight = 12f
-    val pokemonWeight = 50f
-    val state = PokemonInfoUiState(pokemonId, pokemonName, pokemonTypeEnum,
-        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight)
+    val pokemonModel = PokemonModel(1, "bulbasur",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+        "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON.",
+        12f, 50f, "species", 45,
+        "grassland", 30f, "medium-slow")
+    val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
+    val abilityList = listOf(AbilityModel(1, "grass"))
+    val eggGroupList = listOf(EggGroupModel(1, "monster"))
+
+    val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList, eggGroupList)
 
     PokemonInfoAboutTab(R.color.background_blue_water, state)
 }

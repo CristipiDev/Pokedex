@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pokedex.data.database.entity.PokemonEntity
+import com.example.pokedex.data.database.entity.PokemonWithAbilitiesEntity
 import com.example.pokedex.data.database.entity.PokemonWithTypesEntity
 
 @Dao
@@ -19,4 +20,6 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon WHERE pokemonId = :id")
     fun getPokemonFromId(id: Int): PokemonWithTypesEntity
 
+    @Query("SELECT * FROM pokemon WHERE pokemonId = :id")
+    fun getAbilitiesFromId(id: Int): PokemonWithAbilitiesEntity
 }

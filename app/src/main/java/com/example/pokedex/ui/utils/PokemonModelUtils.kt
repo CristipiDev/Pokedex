@@ -1,12 +1,20 @@
 package com.example.pokedex.ui.utils
 
+import com.example.pokedex.data.database.entity.AbilityEntity
+import com.example.pokedex.data.database.entity.EggGroupEntity
 import com.example.pokedex.data.database.entity.PokemonEntity
+import com.example.pokedex.data.database.entity.TypeEntity
 import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
+import com.example.pokedex.data.network.requesresponse.PokemonSpeciesNameRequestResponse
+import com.example.pokedex.data.network.requesresponse.PokemonSpeciesRequestResponseModel
+import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.EggGroupModel
 import com.example.pokedex.domain.model.PokemonModel
-import com.example.pokedex.domain.model.PokemonWithTypesModel
+import com.example.pokedex.domain.model.PokemonWithAllModel
+import com.example.pokedex.domain.model.TypeModel
 
-fun setPokemonListTypeEmun(pokemonList: List<PokemonWithTypesModel>): List<PokemonModel> {
-    val pokemon: ArrayList<PokemonModel> = ArrayList()
+fun setPokemonListTypeEmun(pokemonList: List<PokemonWithAllModel>): List<PokemonWithAllModel> {
+    val pokemon: ArrayList<PokemonWithAllModel> = ArrayList()
 
     pokemonList.forEach {pokemonModel ->
         pokemon.add(setPokemonTypeEmun(pokemonModel))
@@ -14,13 +22,8 @@ fun setPokemonListTypeEmun(pokemonList: List<PokemonWithTypesModel>): List<Pokem
     return pokemon
 }
 
-fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
-    val id = pokemonModel.pokemon.pokemonId
-    val name = pokemonModel.pokemon.pokemonName
-    val img = pokemonModel.pokemon.pokemonImg
-    val description = pokemonModel.pokemon.pokemonDescription
-    val height = pokemonModel.pokemon.height
-    val weight = pokemonModel.pokemon.weight
+fun setPokemonTypeEmun(pokemonModel: PokemonWithAllModel): PokemonWithAllModel {
+    var pokemon = pokemonModel
 
     val typeEnum: ArrayList<PokemonTypesEnum> = ArrayList()
     pokemonModel.typeList.forEach {typeModel ->
@@ -45,35 +48,87 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
             PokemonTypesEnum.WATER.toString() -> { typeEnum.add(PokemonTypesEnum.WATER) }
         }
     }
-    return PokemonModel(id, name, typeEnum, img, description, height, weight)
+
+    pokemon.pokemonTypeEnum = typeEnum
+    val newCaptureRate = (100 * pokemon.pokemon.captureRate)/255
+    pokemon.pokemon.captureRate = newCaptureRate
+
+    val newFemaleRate = (100 * pokemon.pokemon.femaleRate)/8
+    pokemon.pokemon.femaleRate = newFemaleRate
+
+    return pokemon
 }
 
 fun setPokemonModelFromPokemonRequestResponseModel(
     pokemonRequestResponse: PokemonRequestResponseModel,
-    description: String
+    species: PokemonSpeciesRequestResponseModel
 ): PokemonModel {
     val id = pokemonRequestResponse.id
     val name = pokemonRequestResponse.name
     val img = pokemonRequestResponse.sprites.other.officialArtwork.frontDefault
     val height = pokemonRequestResponse.height.toFloat() / 10
     val weight = pokemonRequestResponse.weight.toFloat() / 10
+    val description = species.descriptionList[0].descriptionText
+    val specie = getEnglishSpecie(species.speciesList)
+    val captureRate = species.captureRate
+    val habitat = species.habitat.habitatName
+    val femaleRate = species.femaleRate
+    val growthRate = species.growthRate.growthRateName
+    val generation = species.generation.generationName
 
-    return PokemonModel(id, name, null, img, description, height, weight)
+
+    return PokemonModel(id, name, img, description, height, weight, specie, captureRate, habitat, femaleRate,
+        growthRate, generation)
 }
 
 fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
     return PokemonEntity(pokemonModel.pokemonId, pokemonModel.pokemonName, pokemonModel.pokemonImg,
-        pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight)
+        pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight, pokemonModel.specie,
+        pokemonModel.captureRate, pokemonModel.habitat, pokemonModel.femaleRate, pokemonModel.growthRate,
+        pokemonModel.generation)
 
 }
 
 fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel {
     return PokemonModel(
-        pokemonEntity.pokemonId,
-        pokemonEntity.pokemonName,
-        null,
-        pokemonEntity.pokemonImg,
-        pokemonEntity.pokemonDescription,
-        pokemonEntity.pokemonHeight,
-        pokemonEntity.pokemonWeight)
+        pokemonEntity.pokemonId, pokemonEntity.pokemonName, pokemonEntity.pokemonImg,
+        pokemonEntity.pokemonDescription, pokemonEntity.pokemonHeight, pokemonEntity.pokemonWeight,
+        pokemonEntity.pokemonSpecie, pokemonEntity.pokemonCaptureRate, pokemonEntity.pokemonHabitat,
+        pokemonEntity.pokemonFemaleRate, pokemonEntity.pokemonGrowthRate, pokemonEntity.pokemonGeneration)
+}
+
+fun setListOfTypeModelFromTypeEntity(typeEntity: List<TypeEntity>): ArrayList<TypeModel> {
+    val typeList: ArrayList<TypeModel> = ArrayList()
+    typeEntity.forEach { type ->
+        typeList.add(TypeModel(type.typeId, type.typeName))
+    }
+    return typeList
+}
+
+fun setListOfAbilityModelFromAbilityEntity(abilitiesEntity: List<AbilityEntity>): ArrayList<AbilityModel> {
+    val abilityList: ArrayList<AbilityModel> = ArrayList()
+    abilitiesEntity.forEach {ability ->
+        abilityList.add(AbilityModel(ability.abilityId, ability.abilityName))
+    }
+    return abilityList
+}
+
+fun setListOfEggGroupModelFromEggGroupEntity(eggGroupEntity: List<EggGroupEntity>): ArrayList<EggGroupModel> {
+    val eggGroupList: ArrayList<EggGroupModel> = ArrayList()
+    eggGroupEntity.forEach {eggGroup ->
+        eggGroupList.add(EggGroupModel(eggGroup.eggGroupId, eggGroup.eggGroupName))
+    }
+    return eggGroupList
+}
+
+private fun getEnglishSpecie(speciesList: List<PokemonSpeciesNameRequestResponse>): String {
+    var specie = ""
+
+    speciesList.forEach { species->
+        if (species.specieLanguage.languageName == "en") {
+            specie = species.specieName
+        }
+
+    }
+    return specie
 }
