@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import com.example.pokedex.R
 import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.EggGroupModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.pokemoninfo.PokemonInfoUiState
 import com.example.pokedex.ui.utils.PokemonTypesEnum
@@ -119,7 +120,7 @@ fun PokemonInfoAboutTab(
 
         item {
             BreedingBox(color, state.pokemon.femaleRate,
-                state.pokemon.growthRate)
+                state.eggGroupList, state.pokemon.growthRate)
         }
 
     }
@@ -240,6 +241,7 @@ fun CaptureInfoBox(
 fun BreedingBox(
     color: Int,
     femaleRate: Float,
+    eggGroupList: List<EggGroupModel>,
     growthRate: String
 ) {
     Text(
@@ -297,12 +299,15 @@ fun BreedingBox(
             text = "Egg group",
             style = MaterialTheme.typography.bodyMedium
         )
-        Text(
-            modifier = Modifier.weight(2f),
-            text = "monster",
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Column (modifier = Modifier.weight(2f)) {
+            eggGroupList.forEach { eggGroup  ->
+                Text(
+                    text = eggGroup.eggGroupName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
     Row(modifier = Modifier
         .fillMaxWidth()
@@ -331,7 +336,9 @@ fun previewAboutScreen() {
         "grassland", 30f, "medium-slow")
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val abilityList = listOf(AbilityModel(1, "grass"))
-    val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
+    val eggGroupList = listOf(EggGroupModel(1, "monster"))
+
+    val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList, eggGroupList)
 
     PokemonInfoAboutTab(R.color.background_blue_water, state)
 }

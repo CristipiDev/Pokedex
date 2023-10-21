@@ -1,19 +1,26 @@
 package com.example.pokedex.data.repository
 
 import com.example.pokedex.data.database.dao.AbilityDao
+import com.example.pokedex.data.database.dao.EggGroupDao
 import com.example.pokedex.data.database.dao.PokemonDao
 import com.example.pokedex.data.database.dao.TypeDao
 import com.example.pokedex.data.database.entity.AbilityEntity
+import com.example.pokedex.data.database.entity.EggGroupEntity
 import com.example.pokedex.data.database.entity.PokemonAbilitiesCrossResEntity
+import com.example.pokedex.data.database.entity.PokemonEggGroupCrossResEntity
 import com.example.pokedex.data.database.entity.PokemonTypesCrossResEntity
 import com.example.pokedex.data.database.entity.TypeEntity
 import com.example.pokedex.data.network.PokemonRemoteDataSource
 import com.example.pokedex.data.network.requesresponse.PokemonAbilitiesRequestResponseModel
+import com.example.pokedex.data.network.requesresponse.PokemonEggGroupRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonTypeRequestResponseModel
 import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.EggGroupModel
+import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithAllModel
 import com.example.pokedex.domain.model.TypeModel
 import com.example.pokedex.ui.utils.setListOfAbilityModelFromAbilityEntity
+import com.example.pokedex.ui.utils.setListOfEggGroupModelFromEggGroupEntity
 import com.example.pokedex.ui.utils.setListOfTypeModelFromTypeEntity
 import com.example.pokedex.ui.utils.setPokemonEntityFromPokemonModel
 import com.example.pokedex.ui.utils.setPokemonModelFromPokemonEntity
@@ -34,35 +41,27 @@ class PokemonRepositoryImpl @Inject constructor(
     private val dataSource: PokemonRemoteDataSource,
     private val pokemonDao: PokemonDao,
     private val typeDao: TypeDao,
-    private val abilityDao: AbilityDao
+    private val abilityDao: AbilityDao,
+    private val eggGroupDao: EggGroupDao
 ): PokemonRepository {
     override suspend fun getPokemonFromId(pokemonId: Int): PokemonWithAllModel {
         val pokemon: PokemonWithAllModel
 
         withContext(Dispatchers.IO) {
             val pokemonRequestResponseModel = dataSource.getPokemonFromId(pokemonId)
+            val pokemonSpeciesRequestResponseModel = dataSource.getPokemonSpeciesFromId(pokemonId)
             val pokemonModel = setPokemonModelFromPokemonRequestResponseModel(pokemonRequestResponseModel,
-                dataSource.getPokemonSpeciesFromId(pokemonId))
+                pokemonSpeciesRequestResponseModel)
 
             val typesRoom = insertTypeIntoRoom(pokemonRequestResponseModel.types)
             val abilitiesRoom = insertAbilityIntoRoom(pokemonRequestResponseModel.abilities)
+            val eggGroupRoom = insertEggGroupIntoRoom(pokemonSpeciesRequestResponseModel.eggGroupList)
 
-            pokemon = PokemonWithAllModel(pokemonModel, typesRoom.first, null, abilitiesRoom.first)
+            pokemon = PokemonWithAllModel(pokemonModel, typesRoom.first, null, abilitiesRoom.first,
+                eggGroupRoom.first)
 
-            //Room
-            //insert pokemon
-             val pokemonId = pokemonDao.insertNewPokemon(setPokemonEntityFromPokemonModel(pokemonModel))
-            //insert types into this pokemon
-            typesRoom.second.forEach {id ->
-                val crossRef = PokemonTypesCrossResEntity(pokemonId.toInt(), id)
-                typeDao.insertPokemonWithTypes(crossRef)
-            }
+            insertIntoRoom(pokemonModel, typesRoom.second, abilitiesRoom.second, eggGroupRoom.second)
 
-            //insert abilities into this pokemon
-            abilitiesRoom.second.forEach {id ->
-                val abilityCrossRef = PokemonAbilitiesCrossResEntity(pokemonId.toInt(), id)
-                abilityDao.insertPokemonWithAbilities(abilityCrossRef)
-            }
         }
 
         return pokemon
@@ -93,8 +92,10 @@ class PokemonRepositoryImpl @Inject constructor(
 
                 val typeList = setListOfTypeModelFromTypeEntity(pokemon.types)
                 val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemon.pokemon.pokemonId).abilities)
+                val eggGroupList = setListOfEggGroupModelFromEggGroupEntity(eggGroupDao.getEggGroupFromPokemonId(pokemon.pokemon.pokemonId).eggGroups)
 
-                pokemonList.add(PokemonWithAllModel(pokemonModel, typeList, null, abilityList))
+                pokemonList.add(PokemonWithAllModel(pokemonModel, typeList, null, abilityList,
+                    eggGroupList))
             }
         }
 
@@ -110,20 +111,14 @@ class PokemonRepositoryImpl @Inject constructor(
 
             val typeList = setListOfTypeModelFromTypeEntity(pokemonEntity.types)
             val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemonId).abilities)
+            val eggGroupList = setListOfEggGroupModelFromEggGroupEntity(eggGroupDao.getEggGroupFromPokemonId(pokemonId).eggGroups)
 
-            pokemon = PokemonWithAllModel(pokemonModel, typeList, null,  abilityList)
+
+            pokemon = PokemonWithAllModel(pokemonModel, typeList, null,  abilityList,
+                eggGroupList)
         }
 
         return pokemon
-    }
-
-    private fun checkIfTypeExists(typeName: String): Int{
-        var typeId = -1
-        val typelist = typeDao.getAllTypes()
-        typelist.forEach {type ->
-            if (type.typeName == typeName) typeId = type.typeId
-        }
-        return typeId
     }
 
     private fun insertTypeIntoRoom(pokemonType: List<PokemonTypeRequestResponseModel>)
@@ -161,6 +156,67 @@ class PokemonRepositoryImpl @Inject constructor(
             abilities.add(AbilityModel(abilityId, it.ability.abilityName))
         }
         return Pair(abilities, abilitiesIds)
+    }
+
+    private fun insertEggGroupIntoRoom(eggGroupList: List<PokemonEggGroupRequestResponseModel>)
+            : Pair<ArrayList<EggGroupModel>, ArrayList<Int>> {
+        val eggGroups: ArrayList<EggGroupModel> = ArrayList()
+        val eggGroupIds: ArrayList<Int> = ArrayList()
+
+        eggGroupList.forEach {
+            //Room insert type
+            var eggGroupId = checkIfEggGroupExists(it.eggGroupName)
+            if (eggGroupId == -1) {
+                eggGroupId = eggGroupDao.insertNewEggGroup(EggGroupEntity(it.eggGroupName)).toInt()
+            }
+
+            eggGroupIds.add(eggGroupId)
+            eggGroups.add(EggGroupModel(eggGroupId, it.eggGroupName))
+        }
+        return Pair(eggGroups, eggGroupIds)
+    }
+
+    private fun insertIntoRoom(pokemonModel: PokemonModel, typesRoom: ArrayList<Int>,
+                               abilitiesRoom: ArrayList<Int>, eggGroupRoom: ArrayList<Int>) {
+        //Room
+        //insert pokemon
+        val pokemonId = pokemonDao.insertNewPokemon(setPokemonEntityFromPokemonModel(pokemonModel))
+        //insert types into this pokemon
+        typesRoom.forEach {id ->
+            val crossRef = PokemonTypesCrossResEntity(pokemonId.toInt(), id)
+            typeDao.insertPokemonWithTypes(crossRef)
+        }
+
+        //insert abilities into this pokemon
+        abilitiesRoom.forEach {id ->
+            val abilityCrossRef = PokemonAbilitiesCrossResEntity(pokemonId.toInt(), id)
+            abilityDao.insertPokemonWithAbilities(abilityCrossRef)
+        }
+
+        //insert egg groups into this pokemon
+        eggGroupRoom.forEach {id ->
+            val eggGroupCrossRef = PokemonEggGroupCrossResEntity(pokemonId.toInt(), id)
+            eggGroupDao.insertPokemonWithEggGroup(eggGroupCrossRef)
+        }
+
+    }
+
+    private fun checkIfTypeExists(typeName: String): Int{
+        var typeId = -1
+        val typelist = typeDao.getAllTypes()
+        typelist.forEach {type ->
+            if (type.typeName == typeName) typeId = type.typeId
+        }
+        return typeId
+    }
+
+    private fun checkIfEggGroupExists(eggGroupName: String): Int{
+        var id = -1
+        val eggGrouplist = eggGroupDao.getAllEggGroups()
+        eggGrouplist.forEach {eggGroup ->
+            if (eggGroup.eggGroupName == eggGroupName) id = eggGroup.eggGroupId
+        }
+        return id
     }
 
     private fun checkIfAbilityExists(abilityName: String): Int{

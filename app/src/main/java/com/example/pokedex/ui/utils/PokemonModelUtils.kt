@@ -1,12 +1,14 @@
 package com.example.pokedex.ui.utils
 
 import com.example.pokedex.data.database.entity.AbilityEntity
+import com.example.pokedex.data.database.entity.EggGroupEntity
 import com.example.pokedex.data.database.entity.PokemonEntity
 import com.example.pokedex.data.database.entity.TypeEntity
 import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonSpeciesNameRequestResponse
 import com.example.pokedex.data.network.requesresponse.PokemonSpeciesRequestResponseModel
 import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.EggGroupModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithAllModel
 import com.example.pokedex.domain.model.TypeModel
@@ -109,6 +111,14 @@ fun setListOfAbilityModelFromAbilityEntity(abilitiesEntity: List<AbilityEntity>)
         abilityList.add(AbilityModel(ability.abilityId, ability.abilityName))
     }
     return abilityList
+}
+
+fun setListOfEggGroupModelFromEggGroupEntity(eggGroupEntity: List<EggGroupEntity>): ArrayList<EggGroupModel> {
+    val eggGroupList: ArrayList<EggGroupModel> = ArrayList()
+    eggGroupEntity.forEach {eggGroup ->
+        eggGroupList.add(EggGroupModel(eggGroup.eggGroupId, eggGroup.eggGroupName))
+    }
+    return eggGroupList
 }
 
 private fun getEnglishSpecie(speciesList: List<PokemonSpeciesNameRequestResponse>): String {

@@ -44,7 +44,8 @@ class PokemonInfoViewModel @Inject constructor(
             pokemonState = pokemonState.copy(
                 pokemon = selectedPokemon.pokemon,
                 typeEnum = selectedPokemon.pokemonTypeEnum!!,
-                abilityList = selectedPokemon.abilityList
+                abilityList = selectedPokemon.abilityList,
+                eggGroupList = selectedPokemon.eggGroupList
             )
         }
     }
