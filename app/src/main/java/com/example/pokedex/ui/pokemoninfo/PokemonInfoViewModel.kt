@@ -46,7 +46,8 @@ class PokemonInfoViewModel @Inject constructor(
                 pokemonImg = selectedPokemon.pokemonImg,
                 pokemonDescription = selectedPokemon.pokemonDescription,
                 pokemonHeight = selectedPokemon.height,
-                pokemonWeight = selectedPokemon.weight
+                pokemonWeight = selectedPokemon.weight,
+                pokemonSpecie = selectedPokemon.specie
             )
         }
     }

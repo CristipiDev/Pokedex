@@ -73,7 +73,7 @@ fun PokemonInfoAboutTab(
                 )
                 Text(
                     modifier = Modifier.weight(2f),
-                    text = "seed",
+                    text = state.pokemonSpecie,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -384,7 +384,7 @@ fun previewAboutScreen() {
     val pokemonHeight = 12f
     val pokemonWeight = 50f
     val state = PokemonInfoUiState(pokemonId, pokemonName, pokemonTypeEnum,
-        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight)
+        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight, "seed")
 
     PokemonInfoAboutTab(R.color.background_blue_water, state)
 }

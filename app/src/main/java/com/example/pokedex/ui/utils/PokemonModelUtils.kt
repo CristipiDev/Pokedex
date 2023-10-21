@@ -2,6 +2,8 @@ package com.example.pokedex.ui.utils
 
 import com.example.pokedex.data.database.entity.PokemonEntity
 import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
+import com.example.pokedex.data.network.requesresponse.PokemonSpeciesNameRequestResponse
+import com.example.pokedex.data.network.requesresponse.PokemonSpeciesRequestResponseModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithTypesModel
 
@@ -21,6 +23,7 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
     val description = pokemonModel.pokemon.pokemonDescription
     val height = pokemonModel.pokemon.height
     val weight = pokemonModel.pokemon.weight
+    val specie = pokemonModel.pokemon.specie
 
     val typeEnum: ArrayList<PokemonTypesEnum> = ArrayList()
     pokemonModel.typeList.forEach {typeModel ->
@@ -45,25 +48,27 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithTypesModel): PokemonModel {
             PokemonTypesEnum.WATER.toString() -> { typeEnum.add(PokemonTypesEnum.WATER) }
         }
     }
-    return PokemonModel(id, name, typeEnum, img, description, height, weight)
+    return PokemonModel(id, name, typeEnum, img, description, height, weight, specie)
 }
 
 fun setPokemonModelFromPokemonRequestResponseModel(
     pokemonRequestResponse: PokemonRequestResponseModel,
-    description: String
+    species: PokemonSpeciesRequestResponseModel
 ): PokemonModel {
     val id = pokemonRequestResponse.id
     val name = pokemonRequestResponse.name
     val img = pokemonRequestResponse.sprites.other.officialArtwork.frontDefault
     val height = pokemonRequestResponse.height.toFloat() / 10
     val weight = pokemonRequestResponse.weight.toFloat() / 10
+    val description = species.descriptionList[0].descriptionText
+    val specie = getEnglishSpecie(species.speciesList)
 
-    return PokemonModel(id, name, null, img, description, height, weight)
+    return PokemonModel(id, name, null, img, description, height, weight, specie)
 }
 
 fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
     return PokemonEntity(pokemonModel.pokemonId, pokemonModel.pokemonName, pokemonModel.pokemonImg,
-        pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight)
+        pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight, pokemonModel.specie)
 
 }
 
@@ -75,5 +80,18 @@ fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel
         pokemonEntity.pokemonImg,
         pokemonEntity.pokemonDescription,
         pokemonEntity.pokemonHeight,
-        pokemonEntity.pokemonWeight)
+        pokemonEntity.pokemonWeight,
+        pokemonEntity.pokemonSpecie)
+}
+
+private fun getEnglishSpecie(speciesList: List<PokemonSpeciesNameRequestResponse>): String {
+    var specie = ""
+
+    speciesList.forEach { species->
+        if (species.specieLanguage.languageName == "en") {
+            specie = species.specieName
+        }
+
+    }
+    return specie
 }

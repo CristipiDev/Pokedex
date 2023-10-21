@@ -12,6 +12,7 @@ data class PokemonInfoUiState (
     val pokemonImg: String = "",
     val pokemonDescription: String = "",
     val pokemonHeight: Float = -1f,
-    val pokemonWeight: Float = -1f
+    val pokemonWeight: Float = -1f,
+    val pokemonSpecie: String = ""
 
 )

@@ -35,7 +35,7 @@ class PokemonRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             val pokemonRequestResponseModel = dataSource.getPokemonFromId(pokemonId)
             val pokemonModel = setPokemonModelFromPokemonRequestResponseModel(pokemonRequestResponseModel,
-                dataSource.getPokemonSpeciesFromId(pokemonId).descriptionList[0].descriptionText)
+                dataSource.getPokemonSpeciesFromId(pokemonId))
 
             val types: ArrayList<TypeModel> = ArrayList()
             val typeIds: ArrayList<Int> = ArrayList()

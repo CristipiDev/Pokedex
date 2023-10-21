@@ -9,5 +9,6 @@ data class PokemonModel (
     val pokemonImg: String,
     val pokemonDescription: String,
     val height: Float,
-    val weight: Float
+    val weight: Float,
+    val specie: String
 )
