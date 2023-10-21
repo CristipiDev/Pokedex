@@ -29,6 +29,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import com.example.pokedex.R
+import com.example.pokedex.domain.model.AbilityModel
+import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.ui.pokemoninfo.PokemonInfoUiState
 import com.example.pokedex.ui.utils.PokemonTypesEnum
 
@@ -43,7 +45,7 @@ fun PokemonInfoAboutTab(
         .padding(horizontal = 20.dp, vertical = 30.dp)) {
 
         item {
-            DescriptionBox(color, state.pokemonDescription)
+            DescriptionBox(color, state.pokemon.pokemonDescription)
             Spacer(modifier = Modifier
                 .height(30.dp)
                 .fillMaxWidth())
@@ -51,7 +53,7 @@ fun PokemonInfoAboutTab(
 
 
         item {
-            WeightAndHeightBox(state.pokemonHeight, state.pokemonWeight)
+            WeightAndHeightBox(state.pokemon.height, state.pokemon.weight)
 
             Spacer(
                 modifier = Modifier
@@ -73,7 +75,7 @@ fun PokemonInfoAboutTab(
                 )
                 Text(
                     modifier = Modifier.weight(2f),
-                    text = state.pokemonSpecie,
+                    text = state.pokemon.specie,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -89,9 +91,9 @@ fun PokemonInfoAboutTab(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row (modifier = Modifier.weight(2f)) {
-                    state.pokemonAbilities.forEachIndexed { index, ability  ->
-                        var abilityText = ability
-                        if (index != state.pokemonAbilities.size-1) abilityText = "$ability, "
+                    state.abilityList.forEachIndexed { index, ability  ->
+                        var abilityText = ability.abilityName
+                        if (index != state.abilityList.size-1) abilityText = "${ability.abilityName}, "
                         Text(
                             text = abilityText,
                             style = MaterialTheme.typography.bodyMedium,
@@ -382,17 +384,13 @@ fun BreedingBox(
 @Preview(showBackground = true)
 @Composable
 fun previewAboutScreen() {
-    val pokemonId = 1
-    val pokemonName= "bulbasur"
-    val pokemonTypeEnum = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
-    val pokemonImg = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png"
-    val pokemonDescription = "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON."
-    val pokemonHeight = 12f
-    val pokemonWeight = 50f
-    val state = PokemonInfoUiState(pokemonId, pokemonName, pokemonTypeEnum,
-        pokemonImg, pokemonDescription, pokemonHeight, pokemonWeight,
-        "seed", listOf("hola", "mundo")
-    )
+    val pokemonModel = PokemonModel(1, "bulbasur",
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+        "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON.",
+        12f, 50f, "species")
+    val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
+    val abilityList = listOf(AbilityModel(1, "grass"))
+    val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
 
     PokemonInfoAboutTab(R.color.background_blue_water, state)
 }

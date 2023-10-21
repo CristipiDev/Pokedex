@@ -9,9 +9,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pokedex.R
+import com.example.pokedex.domain.model.AbilityModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.usecase.GetLocalPokemonFromIdUseCase
 import com.example.pokedex.ui.pokemoninfo.tabs.PokemonInfoAboutTab
+import com.example.pokedex.ui.utils.PokemonTypesEnum
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,15 +42,9 @@ class PokemonInfoViewModel @Inject constructor(
             val selectedPokemon  = getLocalPokemonFromIdUseCase.invoke()
 
             pokemonState = pokemonState.copy(
-                pokemonId = selectedPokemon.pokemonId,
-                pokemonName = selectedPokemon.pokemonName,
-                pokemonTypeEnum = selectedPokemon.pokemonTypeEnum!!,
-                pokemonImg = selectedPokemon.pokemonImg,
-                pokemonDescription = selectedPokemon.pokemonDescription,
-                pokemonHeight = selectedPokemon.height,
-                pokemonWeight = selectedPokemon.weight,
-                pokemonSpecie = selectedPokemon.specie,
-                pokemonAbilities = selectedPokemon.abilityList!!
+                pokemon = selectedPokemon.pokemon,
+                typeEnum = selectedPokemon.pokemonTypeEnum!!,
+                abilityList = selectedPokemon.abilityList
             )
         }
     }

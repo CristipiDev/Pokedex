@@ -47,7 +47,7 @@ class PokemonRepositoryImpl @Inject constructor(
             val typesRoom = insertTypeIntoRoom(pokemonRequestResponseModel.types)
             val abilitiesRoom = insertAbilityIntoRoom(pokemonRequestResponseModel.abilities)
 
-            pokemon = PokemonWithAllModel(pokemonModel, typesRoom.first, abilitiesRoom.first)
+            pokemon = PokemonWithAllModel(pokemonModel, typesRoom.first, null, abilitiesRoom.first)
 
             //Room
             //insert pokemon
@@ -94,7 +94,7 @@ class PokemonRepositoryImpl @Inject constructor(
                 val typeList = setListOfTypeModelFromTypeEntity(pokemon.types)
                 val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemon.pokemon.pokemonId).abilities)
 
-                pokemonList.add(PokemonWithAllModel(pokemonModel, typeList, abilityList))
+                pokemonList.add(PokemonWithAllModel(pokemonModel, typeList, null, abilityList))
             }
         }
 
@@ -111,7 +111,7 @@ class PokemonRepositoryImpl @Inject constructor(
             val typeList = setListOfTypeModelFromTypeEntity(pokemonEntity.types)
             val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemonId).abilities)
 
-            pokemon = PokemonWithAllModel(pokemonModel, typeList, abilityList)
+            pokemon = PokemonWithAllModel(pokemonModel, typeList, null,  abilityList)
         }
 
         return pokemon

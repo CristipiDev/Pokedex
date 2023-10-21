@@ -11,8 +11,8 @@ import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithAllModel
 import com.example.pokedex.domain.model.TypeModel
 
-fun setPokemonListTypeEmun(pokemonList: List<PokemonWithAllModel>): List<PokemonModel> {
-    val pokemon: ArrayList<PokemonModel> = ArrayList()
+fun setPokemonListTypeEmun(pokemonList: List<PokemonWithAllModel>): List<PokemonWithAllModel> {
+    val pokemon: ArrayList<PokemonWithAllModel> = ArrayList()
 
     pokemonList.forEach {pokemonModel ->
         pokemon.add(setPokemonTypeEmun(pokemonModel))
@@ -20,20 +20,8 @@ fun setPokemonListTypeEmun(pokemonList: List<PokemonWithAllModel>): List<Pokemon
     return pokemon
 }
 
-fun setPokemonTypeEmun(pokemonModel: PokemonWithAllModel): PokemonModel {
-    val id = pokemonModel.pokemon.pokemonId
-    val name = pokemonModel.pokemon.pokemonName
-    val img = pokemonModel.pokemon.pokemonImg
-    val description = pokemonModel.pokemon.pokemonDescription
-    val height = pokemonModel.pokemon.height
-    val weight = pokemonModel.pokemon.weight
-    val specie = pokemonModel.pokemon.specie
-
-    val abilityList: ArrayList<String> = ArrayList()
-
-    pokemonModel.abilityList.forEach {abilities ->
-        abilityList.add(abilities.abilityName)
-    }
+fun setPokemonTypeEmun(pokemonModel: PokemonWithAllModel): PokemonWithAllModel {
+    var pokemon = pokemonModel
 
     val typeEnum: ArrayList<PokemonTypesEnum> = ArrayList()
     pokemonModel.typeList.forEach {typeModel ->
@@ -58,7 +46,9 @@ fun setPokemonTypeEmun(pokemonModel: PokemonWithAllModel): PokemonModel {
             PokemonTypesEnum.WATER.toString() -> { typeEnum.add(PokemonTypesEnum.WATER) }
         }
     }
-    return PokemonModel(id, name, typeEnum, img, description, height, weight, specie, abilityList)
+
+    pokemon.pokemonTypeEnum = typeEnum
+    return pokemon
 }
 
 fun setPokemonModelFromPokemonRequestResponseModel(
@@ -74,7 +64,7 @@ fun setPokemonModelFromPokemonRequestResponseModel(
     val specie = getEnglishSpecie(species.speciesList)
 
 
-    return PokemonModel(id, name, null, img, description, height, weight, specie, null)
+    return PokemonModel(id, name, img, description, height, weight, specie)
 }
 
 fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
@@ -87,13 +77,11 @@ fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel
     return PokemonModel(
         pokemonEntity.pokemonId,
         pokemonEntity.pokemonName,
-        null,
         pokemonEntity.pokemonImg,
         pokemonEntity.pokemonDescription,
         pokemonEntity.pokemonHeight,
         pokemonEntity.pokemonWeight,
-        pokemonEntity.pokemonSpecie,
-        null)
+        pokemonEntity.pokemonSpecie)
 }
 
 fun setListOfTypeModelFromTypeEntity(typeEntity: List<TypeEntity>): ArrayList<TypeModel> {
