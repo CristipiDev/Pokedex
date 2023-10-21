@@ -9,5 +9,6 @@ data class PokemonModel (
     val pokemonDescription: String = "",
     val height: Float = 0f,
     val weight: Float = 0f,
-    val specie: String = ""
+    val specie: String = "",
+    var captureRate: Int = -1
 )

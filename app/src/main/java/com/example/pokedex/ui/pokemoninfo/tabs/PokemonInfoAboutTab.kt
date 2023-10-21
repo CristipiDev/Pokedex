@@ -112,7 +112,7 @@ fun PokemonInfoAboutTab(
         }
 
         item {
-            CaptureInfoBox(color)
+            CaptureInfoBox(color, state.pokemon.captureRate)
             Spacer(modifier = Modifier
                 .height(20.dp)
                 .fillMaxWidth())
@@ -200,7 +200,8 @@ fun WeightAndHeightBox(
 
 @Composable
 fun CaptureInfoBox(
-    color: Int
+    color: Int,
+    captureRate: Int
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -220,7 +221,7 @@ fun CaptureInfoBox(
         )
         Text(
             modifier = Modifier.weight(2f),
-            text = "12%",
+            text = "$captureRate%",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
@@ -387,7 +388,7 @@ fun previewAboutScreen() {
     val pokemonModel = PokemonModel(1, "bulbasur",
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
         "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON.",
-        12f, 50f, "species")
+        12f, 50f, "species", 45)
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val abilityList = listOf(AbilityModel(1, "grass"))
     val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
