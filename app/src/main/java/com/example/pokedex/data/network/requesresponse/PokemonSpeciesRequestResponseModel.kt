@@ -7,7 +7,9 @@ data class PokemonSpeciesRequestResponseModel (
     @SerializedName("genera") val speciesList: List<PokemonSpeciesNameRequestResponse>,
     @SerializedName("capture_rate") val captureRate: Int,
     @SerializedName("habitat") val habitat: PokemonHabitatRequestResponseModel,
-    @SerializedName("gender_rate") val femaleRate: Float
+    @SerializedName("gender_rate") val femaleRate: Float,
+    @SerializedName("growth_rate") val growthRate: PokemonGrowthRateRequestResponseModel
+
 )
 
 data class PokemonSpeciesTextRequestResponse(
@@ -21,4 +23,12 @@ data class PokemonSpeciesNameRequestResponse(
 
 data class PokemonSpeciesNameLanguageRequestResponse(
     @SerializedName("name") val languageName: String
+)
+
+data class PokemonHabitatRequestResponseModel (
+    @SerializedName("name") val habitatName: String
+)
+
+data class PokemonGrowthRateRequestResponseModel (
+    @SerializedName("name") val growthRateName: String
 )

@@ -90,12 +90,10 @@ fun PokemonInfoAboutTab(
                     text = "Abilities",
                     style = MaterialTheme.typography.bodyMedium
                 )
-                Row (modifier = Modifier.weight(2f)) {
-                    state.abilityList.forEachIndexed { index, ability  ->
-                        var abilityText = ability.abilityName
-                        if (index != state.abilityList.size-1) abilityText = "${ability.abilityName}, "
+                Column (modifier = Modifier.weight(2f)) {
+                    state.abilityList.forEach { ability  ->
                         Text(
-                            text = abilityText,
+                            text = ability.abilityName,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Bold
                         )
@@ -120,7 +118,8 @@ fun PokemonInfoAboutTab(
         }
 
         item {
-            BreedingBox(color, state.pokemon.femaleRate)
+            BreedingBox(color, state.pokemon.femaleRate,
+                state.pokemon.growthRate)
         }
 
     }
@@ -240,7 +239,8 @@ fun CaptureInfoBox(
 @Composable
 fun BreedingBox(
     color: Int,
-    femaleRate: Float
+    femaleRate: Float,
+    growthRate: String
 ) {
     Text(
         modifier = Modifier.fillMaxWidth(),
@@ -314,7 +314,7 @@ fun BreedingBox(
         )
         Text(
             modifier = Modifier.weight(2f),
-            text = "12%",
+            text = growthRate,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
@@ -328,7 +328,7 @@ fun previewAboutScreen() {
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
         "A strange seed was\\nplanted on its\\nback at birth.\\fThe plant sprouts\\nand grows with\\nthis POKéMON.",
         12f, 50f, "species", 45,
-        "grassland", 30f)
+        "grassland", 30f, "medium-slow")
     val pokemonTypeList = listOf(PokemonTypesEnum.GRASS, PokemonTypesEnum.POISON)
     val abilityList = listOf(AbilityModel(1, "grass"))
     val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
