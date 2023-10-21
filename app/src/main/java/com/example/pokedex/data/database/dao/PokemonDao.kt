@@ -17,6 +17,6 @@ interface PokemonDao {
     fun getAllPokemon(): List<PokemonWithTypesEntity>
 
     @Query("SELECT * FROM pokemon WHERE pokemonId = :id")
-    fun getPokemonFromId(id: Int): PokemonEntity
+    fun getPokemonFromId(id: Int): PokemonWithTypesEntity
 
 }

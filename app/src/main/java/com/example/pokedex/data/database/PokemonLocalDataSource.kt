@@ -9,7 +9,7 @@ import com.example.pokedex.data.database.entity.PokemonTypesCrossResEntity
 import com.example.pokedex.data.database.entity.TypeEntity
 
 @Database(entities = [PokemonEntity::class, TypeEntity::class,
-                     PokemonTypesCrossResEntity::class], version = 1)
+                     PokemonTypesCrossResEntity::class], version = 2)
 abstract class PokemonLocalDataSource: RoomDatabase() {
 
     abstract fun pokemonDao(): PokemonDao
