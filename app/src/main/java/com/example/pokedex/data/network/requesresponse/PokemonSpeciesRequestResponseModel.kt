@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class PokemonSpeciesRequestResponseModel (
     @SerializedName("flavor_text_entries") val descriptionList: List<PokemonSpeciesTextRequestResponse>,
     @SerializedName("genera") val speciesList: List<PokemonSpeciesNameRequestResponse>,
-    @SerializedName("capture_rate") val captureRate: Int
+    @SerializedName("capture_rate") val captureRate: Int,
+    @SerializedName("habitat") val habitat: PokemonHabitatRequestResponseModel
 
 
 )

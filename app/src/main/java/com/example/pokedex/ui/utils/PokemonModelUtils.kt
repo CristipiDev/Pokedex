@@ -66,15 +66,16 @@ fun setPokemonModelFromPokemonRequestResponseModel(
     val description = species.descriptionList[0].descriptionText
     val specie = getEnglishSpecie(species.speciesList)
     val captureRate = species.captureRate
+    val habitat = species.habitat.habitatName
 
 
-    return PokemonModel(id, name, img, description, height, weight, specie, captureRate)
+    return PokemonModel(id, name, img, description, height, weight, specie, captureRate, habitat)
 }
 
 fun setPokemonEntityFromPokemonModel(pokemonModel: PokemonModel): PokemonEntity {
     return PokemonEntity(pokemonModel.pokemonId, pokemonModel.pokemonName, pokemonModel.pokemonImg,
         pokemonModel.pokemonDescription, pokemonModel.height, pokemonModel.weight, pokemonModel.specie,
-        pokemonModel.captureRate)
+        pokemonModel.captureRate, pokemonModel.habitat)
 
 }
 
@@ -87,7 +88,8 @@ fun setPokemonModelFromPokemonEntity(pokemonEntity: PokemonEntity): PokemonModel
         pokemonEntity.pokemonHeight,
         pokemonEntity.pokemonWeight,
         pokemonEntity.pokemonSpecie,
-        pokemonEntity.pokemonCaptureRate)
+        pokemonEntity.pokemonCaptureRate,
+        pokemonEntity.pokemonHabitat)
 }
 
 fun setListOfTypeModelFromTypeEntity(typeEntity: List<TypeEntity>): ArrayList<TypeModel> {
