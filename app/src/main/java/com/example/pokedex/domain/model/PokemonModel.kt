@@ -13,5 +13,6 @@ data class PokemonModel (
     var captureRate: Int = -1,
     var habitat: String = "",
     var femaleRate: Float = 0f,
-    val growthRate: String = ""
+    val growthRate: String = "",
+    val generation: String = ""
 )

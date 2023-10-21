@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -145,6 +146,11 @@ fun PokemonInfoMain(
                                 }
                             }
                         }
+                        Text(modifier = Modifier
+                            .padding(top = 8.dp),
+                            text = state.pokemon.generation.uppercase(),
+                            style = MaterialTheme.typography.bodySmall
+                        )
                     }
                 }
             }
@@ -228,7 +234,7 @@ fun PreviewPokemonInfoMail() {
 
     val pokemonModel = PokemonModel(1, "pikachu",
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-        "Texto de descripción", 12f, 56f)
+        "Texto de descripción", 12f, 56f, generation = "generation-i")
 
     val state = PokemonInfoUiState(pokemonModel, pokemonTypeList, abilityList)
 
