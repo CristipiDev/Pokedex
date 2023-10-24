@@ -7,5 +7,6 @@ data class PokemonWithAllModel (
     val typeList: List<TypeModel>,
     var pokemonTypeEnum: List<PokemonTypesEnum>?,
     val abilityList: List<AbilityModel>,
-    val eggGroupList: List<EggGroupModel>
+    val eggGroupList: List<EggGroupModel>,
+    val statList: List<StatModel>
 )

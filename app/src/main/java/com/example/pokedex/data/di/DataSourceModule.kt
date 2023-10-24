@@ -6,6 +6,7 @@ import com.example.pokedex.data.database.PokemonLocalDataSource
 import com.example.pokedex.data.database.dao.AbilityDao
 import com.example.pokedex.data.database.dao.EggGroupDao
 import com.example.pokedex.data.database.dao.PokemonDao
+import com.example.pokedex.data.database.dao.StatsDao
 import com.example.pokedex.data.database.dao.TypeDao
 import com.example.pokedex.data.network.PokemonRemoteDataSource
 import dagger.Module
@@ -68,4 +69,8 @@ class DataSourceModule {
     @Singleton
     @Provides
     fun eggGroupDao(db: PokemonLocalDataSource): EggGroupDao = db.eggGroupDao()
+
+    @Singleton
+    @Provides
+    fun statsDao(db: PokemonLocalDataSource): StatsDao = db.statsDao()
 }

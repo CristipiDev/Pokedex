@@ -45,7 +45,8 @@ class PokemonInfoViewModel @Inject constructor(
                 pokemon = selectedPokemon.pokemon,
                 typeEnum = selectedPokemon.pokemonTypeEnum!!,
                 abilityList = selectedPokemon.abilityList,
-                eggGroupList = selectedPokemon.eggGroupList
+                eggGroupList = selectedPokemon.eggGroupList,
+                statList = selectedPokemon.statList
             )
         }
     }
