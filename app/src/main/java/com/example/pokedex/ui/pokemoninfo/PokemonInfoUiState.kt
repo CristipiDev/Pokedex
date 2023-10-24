@@ -11,5 +11,6 @@ data class PokemonInfoUiState (
     var typeEnum: List<PokemonTypesEnum> = emptyList(),
     val abilityList: List<AbilityModel> = emptyList(),
     val eggGroupList: List<EggGroupModel> = emptyList(),
-    val statList: List<StatModel> = emptyList()
+    val statList: List<StatModel> = emptyList(),
+    val statsName: List<String> = emptyList()
     )

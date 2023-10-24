@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.LinearProgressIndicator
@@ -39,7 +40,8 @@ import com.example.pokedex.ui.utils.PokemonTypesEnum
 fun PokemonInfoStatsTab(
     color: Int,
     background: Int,
-    stats: List<StatModel>
+    stats: List<StatModel>,
+    statNames: List<String>
 ) {
     Column(modifier = Modifier
         .fillMaxSize()
@@ -55,8 +57,8 @@ fun PokemonInfoStatsTab(
         )
 
         LazyColumn(modifier = Modifier.padding(5.dp)) {
-            items(stats){stat ->
-                StatRow(color, background, stat.statName, stat.statBase.toFloat())
+            itemsIndexed(stats) {index, stat ->
+                StatRow(color, background, statNames[index], stat.statBase.toFloat())
             }
         }
 
@@ -155,6 +157,8 @@ fun MovesTable(
 fun previewPokemonInfoStatsTab() {
 
     val stats = listOf(StatModel(1, "special-atack", 30))
+    val statsName = listOf("HP", "ATK", "DEF", "SATK", "SDEF", "SPD")
 
-    PokemonInfoStatsTab(R.color.blue_dragon, R.color.background_blue_dragon, stats)
+    PokemonInfoStatsTab(R.color.blue_dragon, R.color.background_blue_dragon,
+        stats, statsName)
 }

@@ -34,7 +34,9 @@ class PokemonInfoViewModel @Inject constructor(
         pokemonImg = pokemonModel.pokemonImg
     ))*/
 
-    var pokemonState by mutableStateOf(PokemonInfoUiState())
+    var pokemonState by mutableStateOf(PokemonInfoUiState(
+        statsName = listOf("HP", "ATK", "DEF", "SATK", "SDEF", "SPD")
+    ))
 
     fun getPokemon(pokemonId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
