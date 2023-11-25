@@ -61,16 +61,6 @@ fun PokemonInfoStatsTab(
                 StatRow(color, background, statNames[index], stat.statBase.toFloat())
             }
         }
-
-        Spacer(
-            modifier = Modifier
-                .height(30.dp)
-                .fillMaxWidth()
-        )
-
-        MovesTable(color)
-
-
     }
 }
 
