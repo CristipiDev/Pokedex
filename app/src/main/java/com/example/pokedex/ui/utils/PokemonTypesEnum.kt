@@ -1,6 +1,5 @@
 package com.example.pokedex.ui.utils
 
-import androidx.core.graphics.alpha
 import com.example.pokedex.R
 
 enum class PokemonTypesEnum(val color: Int, val icon: Int, val background: Int) {

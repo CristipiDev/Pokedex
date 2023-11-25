@@ -9,23 +9,65 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+    headlineLarge = TextStyle(
+        color = DarkGrey,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Light,
+        fontSize = 30.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+
+    bodyMedium = TextStyle(
+        color = Grey,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Light,
+        fontSize = 18.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
+    bodySmall = TextStyle(
+        color = DarkGrey,
+        fontFamily = FontFamily.Monospace,
+        fontWeight = FontWeight.Light,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
+
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Light,
+        fontSize = 25.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+    titleSmall = TextStyle(
+        color = Grey,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.ExtraLight,
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
+
+    labelLarge = TextStyle(
+        color = White,
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 25.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Light,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
-    titleMedium = TextStyle(
-        color = White,
-        fontFamily = FontFamily.SansSerif,
-        fontWeight = FontWeight.Bold,
-        fontSize = 20.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
     labelSmall = TextStyle(
-        color = White,
+        color = DarkGrey,
         fontFamily = FontFamily.Monospace,
         fontWeight = FontWeight.Light,
         fontSize = 14.sp,
