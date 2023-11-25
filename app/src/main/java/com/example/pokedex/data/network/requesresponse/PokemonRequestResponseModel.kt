@@ -7,5 +7,6 @@ data class PokemonRequestResponseModel (
     val weight: Int,
     val types: List<PokemonTypeRequestResponseModel>,
     val sprites: PokemonSpritesRequestResponseModel,
-    val abilities: List<PokemonAbilitiesRequestResponseModel>
+    val abilities: List<PokemonAbilitiesRequestResponseModel>,
+    val stats: List<PokemonStatsRequestResponseModel>
 )

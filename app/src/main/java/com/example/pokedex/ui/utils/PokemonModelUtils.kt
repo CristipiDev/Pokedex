@@ -3,6 +3,7 @@ package com.example.pokedex.ui.utils
 import com.example.pokedex.data.database.entity.AbilityEntity
 import com.example.pokedex.data.database.entity.EggGroupEntity
 import com.example.pokedex.data.database.entity.PokemonEntity
+import com.example.pokedex.data.database.entity.StatEntity
 import com.example.pokedex.data.database.entity.TypeEntity
 import com.example.pokedex.data.network.requesresponse.PokemonRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonSpeciesNameRequestResponse
@@ -11,6 +12,7 @@ import com.example.pokedex.domain.model.AbilityModel
 import com.example.pokedex.domain.model.EggGroupModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithAllModel
+import com.example.pokedex.domain.model.StatModel
 import com.example.pokedex.domain.model.TypeModel
 
 fun setPokemonListTypeEmun(pokemonList: List<PokemonWithAllModel>): List<PokemonWithAllModel> {
@@ -119,6 +121,14 @@ fun setListOfEggGroupModelFromEggGroupEntity(eggGroupEntity: List<EggGroupEntity
         eggGroupList.add(EggGroupModel(eggGroup.eggGroupId, eggGroup.eggGroupName))
     }
     return eggGroupList
+}
+
+fun setListOfStatModelFromStatEntity(statEntity: List<StatEntity>): ArrayList<StatModel> {
+    val statList: ArrayList<StatModel> = ArrayList()
+    statEntity.forEach { stat ->
+        statList.add(StatModel(stat.statId, stat.statName, stat.statBase))
+    }
+    return statList
 }
 
 private fun getEnglishSpecie(speciesList: List<PokemonSpeciesNameRequestResponse>): String {

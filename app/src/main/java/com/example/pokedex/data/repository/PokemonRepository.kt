@@ -3,24 +3,30 @@ package com.example.pokedex.data.repository
 import com.example.pokedex.data.database.dao.AbilityDao
 import com.example.pokedex.data.database.dao.EggGroupDao
 import com.example.pokedex.data.database.dao.PokemonDao
+import com.example.pokedex.data.database.dao.StatsDao
 import com.example.pokedex.data.database.dao.TypeDao
 import com.example.pokedex.data.database.entity.AbilityEntity
 import com.example.pokedex.data.database.entity.EggGroupEntity
 import com.example.pokedex.data.database.entity.PokemonAbilitiesCrossResEntity
 import com.example.pokedex.data.database.entity.PokemonEggGroupCrossResEntity
+import com.example.pokedex.data.database.entity.PokemonStatsCrossResEntity
 import com.example.pokedex.data.database.entity.PokemonTypesCrossResEntity
+import com.example.pokedex.data.database.entity.StatEntity
 import com.example.pokedex.data.database.entity.TypeEntity
 import com.example.pokedex.data.network.PokemonRemoteDataSource
 import com.example.pokedex.data.network.requesresponse.PokemonAbilitiesRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonEggGroupRequestResponseModel
+import com.example.pokedex.data.network.requesresponse.PokemonStatsRequestResponseModel
 import com.example.pokedex.data.network.requesresponse.PokemonTypeRequestResponseModel
 import com.example.pokedex.domain.model.AbilityModel
 import com.example.pokedex.domain.model.EggGroupModel
 import com.example.pokedex.domain.model.PokemonModel
 import com.example.pokedex.domain.model.PokemonWithAllModel
+import com.example.pokedex.domain.model.StatModel
 import com.example.pokedex.domain.model.TypeModel
 import com.example.pokedex.ui.utils.setListOfAbilityModelFromAbilityEntity
 import com.example.pokedex.ui.utils.setListOfEggGroupModelFromEggGroupEntity
+import com.example.pokedex.ui.utils.setListOfStatModelFromStatEntity
 import com.example.pokedex.ui.utils.setListOfTypeModelFromTypeEntity
 import com.example.pokedex.ui.utils.setPokemonEntityFromPokemonModel
 import com.example.pokedex.ui.utils.setPokemonModelFromPokemonEntity
@@ -42,7 +48,8 @@ class PokemonRepositoryImpl @Inject constructor(
     private val pokemonDao: PokemonDao,
     private val typeDao: TypeDao,
     private val abilityDao: AbilityDao,
-    private val eggGroupDao: EggGroupDao
+    private val eggGroupDao: EggGroupDao,
+    private val statsDao: StatsDao
 ): PokemonRepository {
     override suspend fun getPokemonFromId(pokemonId: Int): PokemonWithAllModel {
         val pokemon: PokemonWithAllModel
@@ -56,12 +63,13 @@ class PokemonRepositoryImpl @Inject constructor(
             val typesRoom = insertTypeIntoRoom(pokemonRequestResponseModel.types)
             val abilitiesRoom = insertAbilityIntoRoom(pokemonRequestResponseModel.abilities)
             val eggGroupRoom = insertEggGroupIntoRoom(pokemonSpeciesRequestResponseModel.eggGroupList)
+            val statRoom = insertStatIntoRoom(pokemonRequestResponseModel.stats)
 
             pokemon = PokemonWithAllModel(pokemonModel, typesRoom.first, null, abilitiesRoom.first,
-                eggGroupRoom.first)
+                eggGroupRoom.first, statRoom.first)
 
-            insertIntoRoom(pokemonModel, typesRoom.second, abilitiesRoom.second, eggGroupRoom.second)
-
+            insertIntoRoom(pokemonModel, typesRoom.second, abilitiesRoom.second, eggGroupRoom.second,
+                statRoom.second)
         }
 
         return pokemon
@@ -93,9 +101,10 @@ class PokemonRepositoryImpl @Inject constructor(
                 val typeList = setListOfTypeModelFromTypeEntity(pokemon.types)
                 val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemon.pokemon.pokemonId).abilities)
                 val eggGroupList = setListOfEggGroupModelFromEggGroupEntity(eggGroupDao.getEggGroupFromPokemonId(pokemon.pokemon.pokemonId).eggGroups)
+                val statList = setListOfStatModelFromStatEntity(statsDao.getStatFromPokemonId(pokemon.pokemon.pokemonId).stats)
 
                 pokemonList.add(PokemonWithAllModel(pokemonModel, typeList, null, abilityList,
-                    eggGroupList))
+                    eggGroupList, statList))
             }
         }
 
@@ -112,10 +121,10 @@ class PokemonRepositoryImpl @Inject constructor(
             val typeList = setListOfTypeModelFromTypeEntity(pokemonEntity.types)
             val abilityList = setListOfAbilityModelFromAbilityEntity(abilityDao.getAbilityFromPokemonId(pokemonId).abilities)
             val eggGroupList = setListOfEggGroupModelFromEggGroupEntity(eggGroupDao.getEggGroupFromPokemonId(pokemonId).eggGroups)
-
+            val statList = setListOfStatModelFromStatEntity(statsDao.getStatFromPokemonId(pokemonId).stats)
 
             pokemon = PokemonWithAllModel(pokemonModel, typeList, null,  abilityList,
-                eggGroupList)
+                eggGroupList, statList)
         }
 
         return pokemon
@@ -176,8 +185,27 @@ class PokemonRepositoryImpl @Inject constructor(
         return Pair(eggGroups, eggGroupIds)
     }
 
+    private fun insertStatIntoRoom(statList: List<PokemonStatsRequestResponseModel>)
+            : Pair<ArrayList<StatModel>, ArrayList<Int>> {
+        val stats: ArrayList<StatModel> = ArrayList()
+        val statsIds: ArrayList<Int> = ArrayList()
+
+        statList.forEach {
+            //Room insert type
+            var statId = checkIfStatExists(it.stat.nameStat)
+            if (statId == -1) {
+                statId = statsDao.insertNewStat(StatEntity(it.stat.nameStat, it.baseStat)).toInt()
+            }
+
+            statsIds.add(statId)
+            stats.add(StatModel(statId, it.stat.nameStat, it.baseStat))
+        }
+        return Pair(stats, statsIds)
+    }
+
     private fun insertIntoRoom(pokemonModel: PokemonModel, typesRoom: ArrayList<Int>,
-                               abilitiesRoom: ArrayList<Int>, eggGroupRoom: ArrayList<Int>) {
+                               abilitiesRoom: ArrayList<Int>, eggGroupRoom: ArrayList<Int>,
+                               statRoom: ArrayList<Int>) {
         //Room
         //insert pokemon
         val pokemonId = pokemonDao.insertNewPokemon(setPokemonEntityFromPokemonModel(pokemonModel))
@@ -197,6 +225,12 @@ class PokemonRepositoryImpl @Inject constructor(
         eggGroupRoom.forEach {id ->
             val eggGroupCrossRef = PokemonEggGroupCrossResEntity(pokemonId.toInt(), id)
             eggGroupDao.insertPokemonWithEggGroup(eggGroupCrossRef)
+        }
+
+        //insert stats into this pokemon
+        statRoom.forEach {id ->
+            val statCrossRef = PokemonStatsCrossResEntity(pokemonId.toInt(), id)
+            statsDao.insertPokemonWithStats(statCrossRef)
         }
 
     }
@@ -226,5 +260,14 @@ class PokemonRepositoryImpl @Inject constructor(
             if (ability.abilityName == abilityName) abilityId = ability.abilityId
         }
         return abilityId
+    }
+
+    private fun checkIfStatExists(statName: String): Int{
+        var id = -1
+        val statlist = statsDao.getAllStats()
+        statlist.forEach {stat ->
+            if (stat.statName == statName) id = stat.statId
+        }
+        return id
     }
 }
